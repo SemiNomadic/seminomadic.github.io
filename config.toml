@@ -2,3 +2,7 @@ baseURL = "http://seminomadic.github.io/"
 languageCode = "en-us"
 title = "SemiNomadic.Life"
 theme = "ananke"
+
+canonifyurls = true
+relativeURLs = true
+publishDir = "../seminomadic.github.io"
