@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on SemiNomadic</title>
+    <title>Posts on SemiNomadic.Life</title>
     <link>http://seminomadic.github.io/posts/</link>
-    <description>Recent content in Posts on SemiNomadic</description>
+    <description>Recent content in Posts on SemiNomadic.Life</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 26 Jun 2020 14:31:40 -0500</lastBuildDate>
