@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="description" content="Architectural Health Check for Alliance Data Management.">
+<meta name="author" content="Ninad Shah">
+<title>EDB&#8482; Architectural Health Check</title>
+<style>
+@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400";
+
+/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address `[hidden]` styling not present in IE 8/9. Hide the `template` element in IE, Safari, and Firefox < 22. */
+[hidden], template { display: none; }
+
+script { display: none !important; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Set default font family to sans-serif. 2. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { font-family: sans-serif; /* 1 */ -ms-text-size-adjust: 100%; /* 2 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Remove the gray background color from active links in IE 10. */
+a { background: transparent; }
+
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 0.7em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 100%; }
+
+body { background: white; color: rgba(0, 0, 0, 0.8); padding: 0; margin: 0; font-family: font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, .admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { line-height: 1.45; color: #7a2518; font-weight: normal; margin-top: 0; margin-bottom: 0.25em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: rgb(9,72,125); text-decoration: underline; line-height: inherit; }
+a:hover, a:focus { color: rgb(251,171,52); }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 {
+	font-family: "Open Sans", "DejaVu Sans", sans-serif;
+	font-weight: 300;
+	font-style: normal;
+	color: #ba3925;
+	text-rendering: optimizeLegibility;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	line-height: 1.0125em;
+}
+
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: #e99b8f; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 {
+	font-size: 1.6875em;
+	font-style: italic;
+	border: solid 1px rgb(9,72,125);
+	padding: 0.5em;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+h3 {
+	font-size: 1.375em;
+	padding-top: 3em;
+}
+
+#toctitle, .sidebarblock > .content > .title {
+	font-size: 1.375em;
+
+}
+
+h4 {
+	font-size: 1.125em;
+	padding-top: 2em;
+}
+
+h5 { font-size: 1em; }
+
+h6 { font-size: 0.9em; font-style: italic; }
+
+hr { border: solid #ddddd8; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: "Droid Sans Mono", "DejaVu Sans Mono", "Monospace", monospace; font-weight: normal; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 3em; }
+ul.no-bullet, ol.no-bullet { margin-left: 5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: rgba(0, 0, 0, 0.8); border-bottom: 1px dotted #ddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #ddd; }
+blockquote cite { display: block; font-size: 0.9375em; color: rgba(0, 0, 0, 0.6); }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: rgba(0, 0, 0, 0.6); }
+
+blockquote, blockquote p { line-height: 1.6; color: rgba(0, 0, 0, 0.85); }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #ddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.2; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.75em; }
+  h4 { font-size: 1.25em; } }
+
+/* Tables */
+table { background: #fff; margin-bottom: 1.25em; margin-left: 2em; border: solid 1px #dedede; }
+table thead, table tfoot { background: rgb(9,72,125); font-weight: bold; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #fff; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: rgba(0, 0, 0, 0.8); }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f8f8f7; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.6; }
+
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.2; word-spacing: -0.05em; }
+h1 strong, h2 strong, h3 strong, #toctitle strong, .sidebarblock > .content > .title strong, h4 strong, h5 strong, h6 strong { font-weight: 400; }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+/* *:not(pre) > code { font-size: 0.9375em; font-style: normal !important; letter-spacing: 0; padding: 0.1em 0.5ex; word-spacing: -0.15em; background-color: #f7f7f8; -webkit-border-radius: 4px; border-radius: 4px; line-height: 1.45; text-rendering: optimizeSpeed; } */
+*:not(pre) > code { font-size: 0.9375em; font-style: normal !important; letter-spacing: 0; padding: 0.1em 0.5ex; word-spacing: -0.15em; line-height: 1.45; text-rendering: optimizeSpeed; }
+
+/* JG note to self - this affects appearance of code blocks */
+pre, pre > code {
+	line-height: 1.45;
+	color: rgba(0, 0, 0, 0.9);
+	font-family: "Droid Sans Mono", "DejaVu Sans Mono", "Monospace", monospace;
+	font-weight: normal;
+	text-rendering: optimizeSpeed;
+}
+
+.keyseq { color: rgba(51, 51, 51, 0.8); }
+
+kbd { display: inline-block; color: rgba(0, 0, 0, 0.8); font-size: 0.75em; line-height: 1.4; background-color: #f7f7f7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 0.1em white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+.keyseq kbd:first-child { margin-left: 0; }
+
+.keyseq kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: rgba(0, 0, 0, 0.8); }
+
+b.button:before, b.button:after { position: relative; top: -1px; font-weight: normal; }
+
+b.button:before { content: "["; padding: 0 3px 0 2px; }
+
+b.button:after { content: "]"; padding: 0 2px 0 3px; }
+
+p a > code:hover { color: rgba(0, 0, 0, 0.9); }
+
+#header, #content, #footnotes, #footer {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	margin-bottom: 0;
+	max-width: 62.5em;
+	*zoom: 1;
+	position: relative;
+	padding-left: 0.9375em;
+	padding-right: 0.9375em;
+}
+
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#content { margin-top: 1.25em; }
+
+#content:before { content: none; }
+
+#header > h1:first-child {
+	color: rgba(0, 0, 0, 0.85);
+	margin-top: 15rem;
+	margin-bottom: 0;
+}
+
+#header > h1:first-child + #toc { margin-top: 8px; border-top: 1px solid #ddddd8; }
+#header > h1:only-child, body.toc2 #header > h1:nth-last-child(2) { border-bottom: 1px solid #ddddd8; padding-bottom: 8px; }
+#header .details {
+	border-top: 1px solid rgb(231,75,36);
+	line-height: 1.45;
+	padding-top: 0.25em;
+	padding-bottom: 40em;
+	padding-left: 0.25em;
+	color: rgba(0, 0, 0, 0.6);
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-ms-flex-flow: row wrap;
+	-webkit-flex-flow:
+	row wrap;
+	flex-flow:
+	row wrap;
+}
+
+#header .details span:first-child { margin-left: -0.125em; }
+#header .details span.email a { color: rgba(0, 0, 0, 0.85); }
+#header .details br { display: none; }
+#header .details br + span:before { content: "\00a0\2013\00a0"; }
+#header .details br + span.author:before { content: "\00a0\22c5\00a0"; color: rgba(0, 0, 0, 0.85); }
+#header .details br + span#revremark:before { content: "\00a0|\00a0"; }
+#header #revnumber { text-transform: capitalize; }
+#header #revnumber:after { content: "\00a0"; }
+
+#content > h1:first-child:not([class]) { color: rgba(0, 0, 0, 0.85); border-bottom: 1px solid #ddddd8; padding-bottom: 8px; margin-top: 0; padding-top: 1rem; margin-bottom: 1.25rem; }
+
+#toc { border-bottom: 1px solid #efefed; padding-bottom: 0.5em; }
+#toc > ul { margin-left: 0.125em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
+#toc ul { font-family: "Open Sans", "DejaVu Sans", sans-serif; list-style-type: none; }
+#toc a { text-decoration: none; }
+#toc a:active { text-decoration: underline; }
+
+#toctitle { color: #7a2518; font-size: 1.2em; }
+
+@media only screen and (min-width: 768px) { #toctitle { font-size: 1.375em; }
+  body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { margin-top: 0 !important; background-color: #f8f8f7; position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #efefed; border-top-width: 0 !important; border-bottom-width: 0 !important; z-index: 1000; padding: 1.25em 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: 0.9em; margin-bottom: 0; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
+  body.toc2.toc-right #toc.toc2 { border-right-width: 0; border-left: 1px solid #efefed; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #e0e0dc; margin-bottom: 1.25em; padding: 1.25em; background: #f8f8f7; -webkit-border-radius: 4px; border-radius: 4px; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+
+#footer { max-width: 100%; background-color: rgba(0, 0, 0, 0.8); padding: 1.25em; }
+
+#footer-text { color: rgba(255, 255, 255, 0.8); line-height: 1.44; }
+
+.sect1 { padding-top: 0.625em; }
+/*.sect2 { padding-top: 0.625em; }*/
+.sect5 { padding-left: 2em; }
+
+@media only screen and (min-width: 768px) { .sect1 { padding-top: 5em; padding-bottom: 2.5em; } }
+/* .sect1 + .sect1 { border-top: 1px solid #000000; } */
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; z-index: 1001; width: 1.5ex; margin-left: -1.5ex; display: block; text-decoration: none !important; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: "\00A7"; font-size: 0.85em; display: block; padding-top: 0.1em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: rgb(231,75,36); text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: rgb(231,75,36); }
+
+.audioblock, .imageblock, .literalblock, .listingblock, .stemblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .audioblock > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .stemblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, table.tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-rendering: optimizeLegibility; text-align: left; font-family: "Noto Serif", "DejaVu Serif", serif; font-size: 1rem; font-style: italic; }
+
+table.tableblock > caption.title { white-space: nowrap; overflow: visible; max-width: 0; }
+
+.paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { color: rgba(0, 0, 0, 0.85); }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border-collapse: separate; border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; font-family: "Open Sans", "DejaVu Sans", sans-serif; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px solid #ddddd8; color: rgba(0, 0, 0, 0.6); }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 4px; border-radius: 4px; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #e0e0dc; margin-bottom: 1.25em; padding: 1.25em; background: #f8f8f7; -webkit-border-radius: 4px; border-radius: 4px; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock > .content > .title { color: #7a2518; margin-top: 0; text-align: center; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock pre, .listingblock pre:not(.highlight), .listingblock pre[class="highlight"], .listingblock pre[class^="highlight "], .listingblock pre.CodeRay, .listingblock pre.prettyprint { border: 1px solid rgb(163,184,207)	; }
+.sidebarblock .literalblock pre, .sidebarblock .listingblock pre:not(.highlight), .sidebarblock .listingblock pre[class="highlight"], .sidebarblock .listingblock pre[class^="highlight "], .sidebarblock .listingblock pre.CodeRay, .sidebarblock .listingblock pre.prettyprint { background: #f2f1f1; }
+
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { -webkit-border-radius: 4px; border-radius: 4px; word-wrap: break-word; padding: 1em; font-size: 0.8125em; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.90625em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+
+.literalblock.output pre { color: #f7f7f8; background-color: rgba(0, 0, 0, 0.9); }
+
+.listingblock pre.highlightjs { padding: 0; }
+.listingblock pre.highlightjs > code { padding: 1em; -webkit-border-radius: 4px; border-radius: 4px; }
+
+.listingblock pre.prettyprint { border-width: 0; }
+
+.listingblock > .content { position: relative; }
+
+.listingblock code[data-lang]:before { display: none; content: attr(data-lang); position: absolute; font-size: 0.75em; top: 0.425rem; right: 0.5rem; line-height: 1; text-transform: uppercase; color: #999; }
+
+.listingblock:hover code[data-lang]:before { display: block; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: "$"; }
+
+table.pyhltable { border-collapse: separate; border: 0; margin-bottom: 0; background: none; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+pre.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #ddddd8; }
+
+pre.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background: none !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 2em 10em 1.25em 5em; display: table; }
+.quoteblock > .title { margin-left: -1.5em; margin-bottom: 0.75em; }
+.quoteblock blockquote, .quoteblock blockquote p { color: rgba(0, 0, 0, 0.85); font-size: 0.9rem; line-height: 1.75; word-spacing: 0.1em; letter-spacing: 0; font-style: italic; text-align: justify; }
+.quoteblock blockquote { margin: 0; padding: 0; border: 0; }
+.quoteblock blockquote:before { content: "\201c"; float: left; font-size: 2.75em; font-weight: bold; line-height: 0.6em; margin-left: -0.6em; color: #7a2518; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: 0.5em; margin-right: 0.5ex; text-align: right; }
+.quoteblock .quoteblock { margin-left: 0; margin-right: 0; padding: 0.5em 0; border-left: 3px solid rgba(0, 0, 0, 0.6); }
+.quoteblock .quoteblock blockquote { padding: 0 0 0 0.75em; }
+.quoteblock .quoteblock blockquote:before { display: none; }
+
+.verseblock { margin: 0 1em 1.25em 1em; }
+.verseblock pre { font-family: "Open Sans", "DejaVu Sans", sans; font-size: 1.15rem; color: rgba(0, 0, 0, 0.85); font-weight: 300; text-rendering: optimizeLegibility; }
+.verseblock pre strong { font-weight: 400; }
+.verseblock .attribution { margin-top: 1.25rem; margin-left: 0.5ex; }
+
+.quoteblock .attribution, .verseblock .attribution { font-size: 0.8em; line-height: 1.45; font-style: italic; }
+.quoteblock .attribution br, .verseblock .attribution br { display: none; }
+.quoteblock .attribution cite, .verseblock .attribution cite { display: block; letter-spacing: -0.05em; color: rgba(0, 0, 0, 0.6); }
+
+.quoteblock.abstract { margin: 0 0 1.25em 0; display: block; }
+.quoteblock.abstract blockquote, .quoteblock.abstract blockquote p { text-align: left; word-spacing: 0; }
+.quoteblock.abstract blockquote:before, .quoteblock.abstract blockquote p:first-of-type:before { display: none; }
+
+table.tableblock { max-width: 100%; border-collapse: separate; }
+table.tableblock td > .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+table.spread { width: 100%; }
+
+table.tableblock, th.tableblock, td.tableblock { border: 0 solid #dedede; }
+
+table.grid-all th.tableblock, table.grid-all td.tableblock { border-width: 0 1px 1px 0; }
+
+table.grid-all tfoot > tr > th.tableblock, table.grid-all tfoot > tr > td.tableblock { border-width: 1px 1px 0 0; }
+
+table.grid-cols th.tableblock, table.grid-cols td.tableblock { border-width: 0 1px 0 0; }
+
+table.grid-all * > tr > .tableblock:last-child, table.grid-cols * > tr > .tableblock:last-child { border-right-width: 0; }
+
+table.grid-rows th.tableblock, table.grid-rows td.tableblock { border-width: 0 0 1px 0; }
+
+table.grid-all tbody > tr:last-child > th.tableblock, table.grid-all tbody > tr:last-child > td.tableblock, table.grid-all thead:last-child > tr > th.tableblock, table.grid-rows tbody > tr:last-child > th.tableblock, table.grid-rows tbody > tr:last-child > td.tableblock, table.grid-rows thead:last-child > tr > th.tableblock { border-bottom-width: 0; }
+
+table.grid-rows tfoot > tr > th.tableblock, table.grid-rows tfoot > tr > td.tableblock { border-width: 1px 0 0 0; }
+
+table.frame-all { border-width: 1px; }
+
+table.frame-sides { border-width: 0 1px; }
+
+table.frame-topbot { border-width: 1px 0; }
+
+th.halign-left, td.halign-left { text-align: left; }
+
+th.halign-right, td.halign-right { text-align: right; }
+
+th.halign-center, td.halign-center { text-align: center; }
+
+th.valign-top, td.valign-top { vertical-align: top; }
+
+th.valign-bottom, td.valign-bottom { vertical-align: bottom; }
+
+th.valign-middle, td.valign-middle { vertical-align: middle; }
+
+table thead th, table tfoot th { font-weight: bold; }
+
+tbody tr th { display: table-cell; line-height: 1.6; background: #f7f8f7; }
+
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: rgba(0, 0, 0, 0.8); font-weight: bold; }
+
+p.tableblock > code:only-child { background: none; padding: 0; }
+
+p.tableblock { font-size: 1em; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 1.75em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > .fa-check-square-o:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .75em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+td.hdlist1 > code { font-size: 0.8em; padding: 1px 3px 0; white-space: nowrap; color: rgb(	9,72,125); background-color: #f2f2f2; border: 1px solid #cccccc; -webkit-border-radius: 4px; border-radius: 4px; text-shadow: none; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 0.75em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px #fff; -webkit-box-shadow: 0 0 0 1px #ddd; box-shadow: 0 0 0 1px #ddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+span.footnote a:active, span.footnoteref a:active { text-decoration: underline; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: 0; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > .fa { cursor: default; }
+
+/* for the codes used below, see http://fortawesome.github.io/Font-Awesome/cheatsheet/ */
+/*.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }*/
+.admonitionblock td.icon [class^="fa icon-"] { font-size: 2.5em; cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: rgb(9,72,125); }
+.admonitionblock td.icon .icon-tip:before { content: "\f05a"; color: rgb(9,72,125); }
+/*.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }*/
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf0000; }
+.admonitionblock td.icon .icon-important:before { content: "\f071"; color: #bf0000; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+/*.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }*/
+
+.conum[data-value] { display: inline-block; color: #fff !important; background-color: rgba(0, 0, 0, 0.8); -webkit-border-radius: 100px; border-radius: 100px; text-align: center; font-size: 0.75em; width: 1.67em; height: 1.67em; line-height: 1.67em; font-family: "Open Sans", "DejaVu Sans", sans-serif; font-style: normal; font-weight: bold; }
+.conum[data-value] * { color: #fff !important; }
+.conum[data-value] + b { display: none; }
+.conum[data-value]:after { content: attr(data-value); }
+pre .conum[data-value] { position: relative; top: -0.125em; }
+
+b.conum * { color: inherit !important; }
+
+.conum:not([data-value]):empty { display: none; }
+
+h1, h2 { letter-spacing: -0.01em; }
+
+dt, th.tableblock, td.content { text-rendering: optimizeLegibility; }
+
+p, td.content { letter-spacing: -0.01em; }
+p strong, td.content strong { letter-spacing: -0.005em; }
+
+p, blockquote, dt, td.content { font-size: 1.0625rem; }
+
+p { margin-bottom: 1.25rem; }
+
+.sidebarblock p, .sidebarblock dt, .sidebarblock td.content, p.tableblock { font-size: 1em; }
+
+.exampleblock > .content { background-color: #fffef7; border-color: #e0e0dc; -moz-box-shadow: 0 1px 4px #e0e0dc; -webkit-box-shadow: 0 1px 4px #e0e0dc; box-shadow: 0 1px 4px #e0e0dc; }
+
+.print-only { display: none !important; }
+
+@media print { @page { margin: 1.25cm 0.75cm; }
+  * { -moz-box-shadow: none !important; -webkit-box-shadow: none !important; box-shadow: none !important; text-shadow: none !important; }
+  a { color: inherit !important; text-decoration: underline !important; }
+  a.bare, a[href^="#"], a[href^="mailto:"] { text-decoration: none !important; }
+  a[href^="http:"]:not(.bare):after, a[href^="https:"]:not(.bare):after, a[href^="mailto:"]:not(.bare):after { content: "(" attr(href) ")"; display: inline-block; font-size: 0.875em; padding-left: 0.25em; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  pre, blockquote, tr, img { page-break-inside: avoid; }
+  thead { display: table-header-group; }
+  img { max-width: 100% !important; }
+  p, blockquote, dt, td.content { font-size: 1em; orphans: 3; widows: 3; }
+  h2, h3, #toctitle, .sidebarblock > .content > .title, #toctitle, .sidebarblock > .content > .title { page-break-after: avoid; }
+  #toc, .sidebarblock, .exampleblock > .content { background: none !important; }
+  #toc { border-bottom: 1px solid #ddddd8 !important; padding-bottom: 0 !important; }
+  .sect1 { padding-bottom: 0 !important; }
+  .sect1 + .sect1 { border: 0 !important; }
+  #header > h1:first-child { margin-top: 1.25rem; }
+  body.book #header { text-align: center; }
+  body.book #header > h1:first-child { border: 0 !important; margin: 2.5em 0 1em 0; }
+  body.book #header .details { border: 0 !important; display: block; padding: 0 !important; }
+  body.book #header .details span:first-child { margin-left: 0 !important; }
+  body.book #header .details br { display: block; }
+  body.book #header .details br + span:before { content: none !important; }
+  body.book #toc { border: 0 !important; text-align: left !important; padding: 0 !important; margin: 0 !important; }
+  body.book #toc, body.book #preamble, body.book h1.sect0, body.book .sect1 > h2 { page-break-before: always; }
+  .listingblock code[data-lang]:before { display: block; }
+  #footer { background: none !important; padding: 0 0.9375em; }
+  #footer-text { color: rgba(0, 0, 0, 0.6) !important; font-size: 0.9em; }
+  .hide-on-print { display: none !important; }
+  .print-only { display: block !important; }
+  .hide-for-print { display: none !important; }
+  .show-for-print { display: inherit !important; } }
+
+/** vim: set expandtab:ts=4:sw=4
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-right">
+<div id="header">
+<h1><strong>EDB</strong>&#8482; Architectural Health Check</h1>
+<div class="details">
+<span id="author" class="author">Ninad Shah</span><br>
+<span id="email" class="email"><a href="mailto:ninad.shah@enterprisedb.com">ninad.shah@enterprisedb.com</a></span><br>
+<span id="revnumber">version 1.0,</span>
+<span id="revdate">2016-08-16</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Contents</div>
+<ul class="sectlevel1">
+<li><a href="#__span_class_icon_i_class_fa_fa_file_text_o_i_span_executive_summary"><span class="icon"><i class="fa fa-file-text-o"></i></span>&#160;&#160;Executive Summary</a>
+<ul class="sectlevel2">
+<li><a href="#_the_ahc_process">The AHC Process</a></li>
+<li><a href="#_application_overview">Application Overview</a></li>
+<li><a href="#_specific_issues">Specific Issues</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_cubes_i_span_infrastructure_architecture"><span class="icon"><i class="fa fa-cubes"></i></span>&#160;&#160;Infrastructure &amp; Architecture</a>
+<ul class="sectlevel2">
+<li><a href="#_server">Server</a></li>
+<li><a href="#_database">Database</a></li>
+<li><a href="#_application">Application</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_flash_i_span_immediate_recommendations"><span class="icon"><i class="fa fa-flash"></i></span>&#160;&#160;Immediate Recommendations</a>
+<ul class="sectlevel2">
+<li><a href="#_unused_indexes">Unused Indexes</a></li>
+<li><a href="#_read_ahead">Read Ahead</a></li>
+<li><a href="#_environment_variables">Environment Variables</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_cogs_i_span_configuration_tuning"><span class="icon"><i class="fa fa-cogs"></i></span>&#160;&#160;Configuration Tuning</a>
+<ul class="sectlevel2">
+<li><a href="#_operating_system">Operating System</a></li>
+<li><a href="#database-parameters">Database Parameters</a>
+<ul class="sectlevel3">
+<li><a href="#_resource_usage">Resource Usage</a></li>
+<li><a href="#_write_ahead_log">Write-Ahead Log</a></li>
+<li><a href="#_query_tuning">Query Tuning</a></li>
+<li><a href="#autovacuum">Autovacuum</a></li>
+<li><a href="#_logging">Logging</a></li>
+<li><a href="#db-parameters">Summary Table</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#tuning"><span class="icon"><i class="fa fa-wrench"></i></span>&#160;&#160;Performance Tuning</a>
+<ul class="sectlevel2">
+<li><a href="#_tuning_guidelines">Tuning Guidelines</a></li>
+<li><a href="#reindexing">Reindexing</a></li>
+<li><a href="#_partitioned_tables">Partitioned Tables</a>
+<ul class="sectlevel3">
+<li><a href="#_constraint_exclusion">Constraint Exclusion</a></li>
+</ul>
+</li>
+<li><a href="#_clustered_tables">Clustered Tables</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_database_i_span_hardware_considerations"><span class="icon"><i class="fa fa-database"></i></span>&#160;&#160;Hardware Considerations</a>
+<ul class="sectlevel2">
+<li><a href="#_memory">Memory</a></li>
+<li><a href="#_storage">Storage</a>
+<ul class="sectlevel3">
+<li><a href="#_current_architecture">Current Architecture</a></li>
+<li><a href="#_disk_architecture">Disk Architecture</a></li>
+<li><a href="#_file_system_types">File System Types</a></li>
+<li><a href="#_raid">RAID</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_life_ring_i_span_disaster_recovery_plan"><span class="icon"><i class="fa fa-life-ring"></i></span>&#160;&#160;Disaster Recovery Plan</a>
+<ul class="sectlevel2">
+<li><a href="#_current_backup_strategy">Current Backup Strategy</a></li>
+<li><a href="#_types_of_backup_strategies">Types of Backup Strategies</a>
+<ul class="sectlevel3">
+<li><a href="#_logical_backup">Logical Backup</a></li>
+<li><a href="#_physical_backup">Physical Backup</a></li>
+</ul>
+</li>
+<li><a href="#_documentation_training_tools">Documentation, Training &amp; Tools</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_rocket_i_span_upgrading_postgres"><span class="icon"><i class="fa fa-rocket"></i></span>&#160;&#160;Upgrading Postgres</a>
+<ul class="sectlevel2">
+<li><a href="#_methods">Methods</a>
+<ul class="sectlevel3">
+<li><a href="#_pg_dump">pg_dump</a></li>
+<li><a href="#_pg_upgrade">pg_upgrade</a></li>
+<li><a href="#_logical_replication">logical replication</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_users_i_span_additional_products_services"><span class="icon"><i class="fa fa-users"></i></span>&#160;&#160;Additional Products &amp; Services</a>
+<ul class="sectlevel2">
+<li><a href="#_training_certifications">Training &amp; Certifications</a></li>
+<li><a href="#_edb_postgres_enterprise_manager_epem">EDB Postgres Enterprise Manager (EPEM)</a></li>
+<li><a href="#_edb_postgres_failover_manager_epfm">EDB Postgres Failover Manager (EPFM)</a></li>
+<li><a href="#bart">EDB Postgres Backup and Recovery (EPBR)</a></li>
+<li><a href="#xDB">EDB Postgres Replication Server (EPRS)</a></li>
+<li><a href="#_remotedba_service_rdba">RemoteDBA Service (RDBA)</a></li>
+</ul>
+</li>
+<li><a href="#__span_class_icon_i_class_fa_fa_copy_i_span_appendices"><span class="icon"><i class="fa fa-copy"></i></span>&#160;&#160;Appendices</a>
+<ul class="sectlevel2">
+<li><a href="#shm-snippet">Kernel Shared Memory</a></li>
+<li><a href="#_database_sizes">Database Sizes</a></li>
+<li><a href="#_non_default_db_parameters">Non-Default DB Parameters</a></li>
+<li><a href="#unused-indexes">Unused Indexes</a></li>
+<li><a href="#tables-sizes">Table Sizes</a></li>
+<li><a href="#missing-keys">Tables without Primary Keys</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_file_text_o_i_span_executive_summary"><a class="link" href="#__span_class_icon_i_class_fa_fa_file_text_o_i_span_executive_summary"><span class="icon"><i class="fa fa-file-text-o"></i></span>&#160;&#160;Executive Summary</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_ahc_process"><a class="link" href="#_the_ahc_process">The AHC Process</a></h3>
+<div class="paragraph">
+<p>EnterpriseDB&#174; (EDB&#8482;) has performed a three day Architectural Health Check (AHC) on Alliance Data Management&#39;s Postgres database. This health check inspected a number of areas:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Operating system</p>
+</li>
+<li>
+<p>Database settings</p>
+</li>
+<li>
+<p>Backup strategies</p>
+</li>
+<li>
+<p>General database practices</p>
+</li>
+<li>
+<p>Upgrades</p>
+</li>
+<li>
+<p>HA options</p>
+</li>
+<li>
+<p>Hardware recommendations</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The AHC process is a thorough attempt to understand the operations of ADM&#39;s database system and business application. This serves as a firm base from which to generate recommendations to improve the database system&#39;s performance and to ensure a robust and healthy business application with an architecture capable of scaling beyond current requirements.</p>
+</div>
+<div class="paragraph">
+<p>In summary, the database infrastructure currently in use is an excellent building block for the enterprise-class system that ADM requires. Finer tuning will begin to yield much higher scalability of the current server, while at the same time providing a solid base for future performance to be maintained (or increased) by increasing the physical capacity of the server (with regard to memory, processors, etc.). These recommendations are based on years of experience that EDB has in implementing and tuning large-scale, enterprise-class database systems.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_overview"><a class="link" href="#_application_overview">Application Overview</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Monthly Billing</p>
+</li>
+<li>
+<p>Other Backend Processes</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_specific_issues"><a class="link" href="#_specific_issues">Specific Issues</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Inability to proactively monitor for performance issues.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_cubes_i_span_infrastructure_architecture"><a class="link" href="#__span_class_icon_i_class_fa_fa_cubes_i_span_infrastructure_architecture"><span class="icon"><i class="fa fa-cubes"></i></span>&#160;&#160;Infrastructure &amp; Architecture</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_server"><a class="link" href="#_server">Server</a></h3>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>hostname</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>IPROPGSSRV2</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>vm system</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>none</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>operating system</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>Ubuntu 14.04.5 LTS</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CPU</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>2 sockets x 5 cores, Intel&#174; Xeon&#174; CPU E5-2650 v3 @ 2.30GHz, Hyperthreading: ENABLED</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RAM</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>106 GB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Storage</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>SSD</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RAID Type</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>hardware</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>RAID Level</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>6</pre></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_database"><a class="link" href="#_database">Database</a></h3>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>name(s)</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>iPro</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>version</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>PostgreSQL 9.4.8</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>database size</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>640 GB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>database home</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>/var/lib/postgresql/9.4/main</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>database binaries</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>/usr/lib/postgresql/9.4/bin</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>database OS user</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>postgres</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>database superuser</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>postgres</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>required availability</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>72 hours for Major Outage Recovery, 10 hours for major updates, 2 during normal business hours</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>monitoring tools</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>pgAdmin,PEM</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>connection pooling</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>None</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>replication</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>None</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>standby server</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>None</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>failover manager</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>None</pre></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_application"><a class="link" href="#_application">Application</a></h3>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>name</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>iPro Website/Monthly Billing/Other Backend Processes</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>technology</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>Python</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>type (OLTP, warehousing, etc.)</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>Mixed</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>tier type (single? multi? middleware in use?)</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>Multi tier</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>read/write ratio</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>90/10</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>3rd party tools</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>None</pre></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_flash_i_span_immediate_recommendations"><a class="link" href="#__span_class_icon_i_class_fa_fa_flash_i_span_immediate_recommendations"><span class="icon"><i class="fa fa-flash"></i></span>&#160;&#160;Immediate Recommendations</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The section provides recommendations that are expected to yield benefits in performance that are relatively easy to implement with minimal downtime.</p>
+</div>
+<div class="sect2">
+<h3 id="_unused_indexes"><a class="link" href="#_unused_indexes">Unused Indexes</a></h3>
+<div class="paragraph">
+<p>Provided in the appendices is a <a href="#unused-indexes">list of indexes</a> we recommend as candidates to be dropped, as they are either not used or they duplicate other indexes. The benefits to removing such indexes are that they will free up space, and will improve the performance of updates, deletions and insertions into tables as the indexes will no longer need to be updated with those changes.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Before deleting these indexes, it is important to verify that they are not expected to be used by your current implementation.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The decision to remove a particular index might be mitigated by several possible factors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The traffic pattern currently in use does not cause the indexes to be used, but anticipated changes would cause them to be used.</p>
+</li>
+<li>
+<p>The planner is not properly using all the indexes it is expected to.  There are unusual cases where the query execution planner should be using an index for execution of SQL DML, but does not.  In these cases, the index should not be removed, and the SQL in question examined, and possibly restructured to properly use the index.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_read_ahead"><a class="link" href="#_read_ahead">Read Ahead</a></h3>
+<div class="paragraph">
+<p>Increasing disk read ahead improves I/O throughput by reducing the number of requests to disk. This is typically set at 128 kB, but it&#39;s generally recommended that this be set to 4096 kB on the disk hosting the database or tablespaces.</p>
+</div>
+<div class="paragraph">
+<p>This information can be obtained with <code>cat /sys/block/&lt;device name&gt;/queue/read_ahead_kb</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat /sys/block/sda/queue/read_ahead_kb
+128</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to benchmark the effect of increasing read ahead, it can be changed instantly by running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>echo 4096 &gt; /sys/block/sda/queue/read_ahead_kb</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For this to be set permanently, add it to <code>/etc/rc.local</code> so that it takes effect upon reboot.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environment_variables"><a class="link" href="#_environment_variables">Environment Variables</a></h3>
+<div class="paragraph">
+<p>While not having an impact upon performance, it is considered best practice to have environment variables set correctly for your Postgres cluster. Not doing so can lead to odd behaviors due to version mistmatches, confusion for an administrator not familiar with the system, etc..</p>
+</div>
+<div class="paragraph">
+<p>As an example, the current value of <code>PATH</code> does not include the binaries for the running server version of Postgres (PostgreSQL 9.4.8). As a result, <code>psql --version</code> returns <code>psql (PostgreSQL) 9.4.8</code></p>
+</div>
+<div class="paragraph">
+<p>At minimum, the following is recommended for the <code>postgres</code> OS user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export PATH=/usr/lib/postgresql/9.4/bin:$PATH
+export PGDATA=/var/lib/postgresql/9.4/main</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_cogs_i_span_configuration_tuning"><a class="link" href="#__span_class_icon_i_class_fa_fa_cogs_i_span_configuration_tuning"><span class="icon"><i class="fa fa-cogs"></i></span>&#160;&#160;Configuration Tuning</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>During the initial phase of the AHC, several parameters related to memory and query tuning were found to be significantly different from those EDB would recommend. The recommendations that follow take into account the current utilization of the database instance as well as planned growth. They also assume the database to be the only service running on the server, with full use of all available physical resources. However, if any hardware changes are made (more RAM, different hard drive configuration), or access patterns change (e.g. change from heavy reads to heavy writes), these may need to be reviewed.</p>
+</div>
+<div class="sect2">
+<h3 id="_operating_system"><a class="link" href="#_operating_system">Operating System</a></h3>
+<div class="paragraph">
+<p>To change the values of the following operating system parameters, the <code>/etc/sysctl.conf</code> file will need to be edited as root. The following lines should either be edited in the file, or added if not already present. For clarity in administration, it is recommended to create a <code>postgres.conf</code> (or similarly named) file in <code>/etc/sysctl.d</code> for kernel parameters being tuned specifically for Postgres. Note that editing <code>/etc/sysctl.conf</code> (or adding <code>*.conf</code> files to <code>/etc/sysctl.d</code>) will cause the changes to take effect when the operating system next boots. In order to also apply changes immediately, it will be necessary to run the following as root:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console"># sysctl -p /etc/sysctl.d/postgres.conf</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Linux kernels between 3.0 and 3.8 are known to have poor performance characteristics under database loads. Linux kernel 3.2 specifically has significant performance issues. If you are running any of these affected kernel versions, EDB recommends either upgrading to newer releases (ideally) or downgrading to the latest 2.6.x kernel.
+</td>
+</tr>
+</table>
+</div>
+<div class="hdlist">
+<div class="title">Kernel Parameters</div>
+<table>
+<tr>
+<td class="hdlist1">
+<code>kernel.sched_migration_cost = 5000000</code> 
+<br>
+<code>kernel.sched_migration_cost_ns = 5000000</code> 
+</td>
+<td class="hdlist2">
+<p>Since PostgreSQL is fork-based (not thread-based), the cost of context switching under a large number of processes (say, a high connection count) is significant. As such, EDB recommends telling the kernel that they are more expensive, so it tries harder to avoid them if possible. Note that this tunable is called <code>kernel.sched_migration_cost</code> for kernels before 3.11 and <code>kernel.sched_migration_cost_ns</code> for kernel 3.11 or later.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>kernel.sched_autogroup_enabled = 0</code> 
+</td>
+<td class="hdlist2">
+<p>This setting groups tasks by TTY, to improve perceived responsiveness on an interactive system. On a server with a long running forking daemon, this will tend to keep child processes from migrating away as soon as they should. Since Postgres fits this model, EDB recommends disabling this feature by setting it to 0.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>kernel.numa_balancing_scan_period_min_ms = 0</code> 
+<br>
+<code>kernel.numa_balancing_scan_period_max_ms = 0</code> 
+<br>
+<code>kernel.numa_balancing_scan_size_mb = 0</code> 
+<br>
+<code>kernel.numa_balancing_scan_period_min_ms = 1000000</code> 
+</td>
+<td class="hdlist2">
+<p>By default, NUMA wants to keep 'hot' cache pages local to the cpu that is using them. On large numbers of cores, with large amounts of ram, this can lead to perf issues whenever a process migrates from one core to another as NUMA tries to 'helpfully' move the associated pages from one core&#8217;s L2 cache to the other core&#8217;s L2. EDB recommends disabling this feature and using the non-NUMA memory balancing allocator.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.dirty_background_bytes = 134217728</code> 
+<br>
+<code>vm.dirty_ratio = 90</code> 
+</td>
+<td class="hdlist2">
+<p><code>vm.dirty_background_bytes</code> contains the number of bytes at which the background kernel flusher threads will start writing out dirty data whereas <code>vm.dirty_ratio</code> contains, as a percentage of total available memory that contains free pages and reclaimable pages, the number of pages at which a process which is generating disk writes will itself start writing out dirty data. In tuning these two parameters, it is ideal to set <code>vm.dirty_background_bytes</code> very low (EDB recommends 134217728 and <code>vm.dirty_ratio</code> very high (EDB recommends 90%) as we want to coerce the kernel into doing asynchronous background flushing of dirty memory for us instead of forcing the Postgres processes to flush their own buffers in the foreground.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.dirty_background_ratio = 0</code> 
+<br>
+<code>vm.dirty_bytes = 0</code> 
+</td>
+<td class="hdlist2">
+<p>EDB recommends setting these values to 0 and using their counterparts <code>vm.dirty_background_bytes</code> and 'vm.dirty_ratio' to more precisely control when the pdflush daemon kicks in.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.dirty_expire_centisecs = 499</code> 
+</td>
+<td class="hdlist2">
+<p>This tunable is used to define when dirty data is old enough to be eligible for writeout by the kernel pdflush threads. It is expressed in 100&#39;ths of a second. Data which has been dirty in-memory for longer than this interval will be written out next time a pdflush thread wakes up.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.overcommit_memory = 2</code> 
+</td>
+<td class="hdlist2">
+<p>Linux allows processes to allocate more memory than exists in the system under the assumption that not all of it will actually be used. Although this parameter tends to be set to its default of 0, which prevents excessive memory overcommit (requesting more memory than is available), overcommit is still possible. On a database server, it&#39;s better to set the value to 2, which disables this behavior.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.swappiness = 10</code> 
+</td>
+<td class="hdlist2">
+<p>This typically defaults to 60. But on a database server this is undesirable, as it will result in a great deal of disk swapping if the server is running low on memory, rather than reducing the buffer cache. More predictable performance is obtained by setting a preference for shrinking the file system cache rather than using swap. It is therefore recommended that this be set to 10.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vm.zone_reclaim_mode = 0</code> 
+</td>
+<td class="hdlist2">
+<p>The default for this varies from system to system. But on a database server this should always be set to 0, as otherwise it won&#39;t be using all available RAM for caching, and it can throttle writes.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>transparent_hugepage.defrag</code> 
+</td>
+<td class="hdlist2">
+<p>Transparent huge pages defragmentation can lead to unpredictable database stalls on some Linux kernels. For Postgres 9.4.x and above, we recommend setting this parameter to <code>madvise</code>. This is applied by adding the following to <code>/etc/rc.local</code>:<br></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">echo madvise &gt; /sys/kernel/mm/transparent_hugepage/defrag</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="database-parameters"><a class="link" href="#database-parameters">Database Parameters</a></h3>
+<div class="paragraph">
+<p>To change the values of the following database parameters, the file <code>postgresql.conf</code> will need to be edited. The following lines should either be modified in the file, or added if not already present. A <a href="#db-parameters">summary table</a> of all recommended settings and their current values is provided at the end of this section.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In versions 9.3 and above, it is possible to modify <code>postgresql.conf</code> through the use of <a href="http://www.postgresql.org/docs/current/static/config-setting.html#CONFIG-INCLUDES">include directives</a>. This offers a very clean and self-documenting approach to the management of the configuration file. This is especially worth considering when applying the following changes, as the current configuration file remains untouched but for the exception of the include statement at the end, while these changes are kept isolated in a separate file (e.g. <code>edb-ahc.conf</code> ) and are therefore easily maintained, modified and/or unapplied. See also <a href="http://i-dba.blogspot.com/2013/08/taming-your-postgresqlconf-changes-with.html">Taming Your postgresql.conf Changes With Includes</a> for further discussion on this topic.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Current location of <code>postgresql.conf</code> and other important files related to database configuration and operation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">       name        |                 setting
+-------------------+------------------------------------------
+ config_file       | /etc/postgresql/9.4/main/postgresql.conf
+ data_directory    | /var/lib/postgresql/9.4/main
+ external_pid_file | /var/run/postgresql/9.4-main.pid
+ hba_file          | /etc/postgresql/9.4/main/pg_hba.conf
+ ident_file        | /etc/postgresql/9.4/main/pg_ident.conf</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resource_usage"><a class="link" href="#_resource_usage">Resource Usage</a></h4>
+<div class="paragraph">
+<p>When tuning a Postgres cluster for peak performance on a specific server configuration for a given application load, efficient use of memory, disk i/o, and various other system resources is key. The parameters provided below are therefore specific to the current physical characteristics of server <code>IPROPGSSRV2</code> and the observed load of the iPro Website/Monthly Billing/Other Backend Processes application. In the event that either of these were to change, some of the values recommended would also require modification.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>bgwriter_delay = 100ms</code> 
+</td>
+<td class="hdlist2">
+<p>On systems with a high volume of writes, the default value of 200 ms is too high and should be reduced. On very high frequency systems, positive results may be seen when taking this value as low as 10 ms. This should be approached in a stepwise fashion, however, with benchmarking as appropriate.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>bgwriter_lru_maxpages = 1000</code> 
+</td>
+<td class="hdlist2">
+<p>The maximum number of dirty buffers that will be written by the background writer process in a given LRU sweep. Increasing this value to 1000 should allow more buffers to be written at once.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>bgwriter_lru_multiplier = 4</code> 
+</td>
+<td class="hdlist2">
+<p>The number of dirty buffers actually written in the last sweep is multiplied by this value in order to determine how many will potentially be dirtied before the next sweep. Increasing this value to 4 from 2 will make it more likely that the buffers are cleaned ahead of time.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>maintenance_work_mem = 6GB</code> 
+</td>
+<td class="hdlist2">
+<p>This determines the maximum amount of memory used for maintenance operations like VACUUM, CREATE INDEX, ALTER TABLE ADD FOREIGN KEY, and data-loading operations. These may increase the I/O on the database servers while performing such activities, so allocating more memory to them may lead to these operations finishing more quickly. Currently set to 2GB, EDB recommends 15% of RAM divided by <code>autovacuum_max_workers</code>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>shared_buffers = 16GB</code> 
+</td>
+<td class="hdlist2">
+<p>This sets the number of shared memory buffers used by the database server.
+The size of the database cluster is also taken into consideration when tuning this parameter. EDB determined the database cluster size to be 640 GB. Taking this into account, a <code>shared_buffers</code> value of 16GB is recommended in ADM&#39;s environment.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>vacuum_cost_limit = 2000</code> 
+</td>
+<td class="hdlist2">
+<p>The accumulated cost that will cause the vacuuming process to sleep. The default value of -1 for <code>autovacuum_vacuum_cost_limit</code> <em>(<a href="#autovacuum">see below</a>)</em> results in <code>autovacuum_vacuum_cost_limit</code> = <code>vacuum_cost_limit</code>. However, this value is distributed proportionally among the running autovacuum workers. This is done in order that the sum of the limits of each worker never exceeds the limit on this variable. Therefore, the default value of 200 for <code>vacuum_cost_limit</code> is generally too low for a busy database server with multiple autovacuum workers.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>work_mem = 128MB</code> 
+</td>
+<td class="hdlist2">
+<p>The <code>work_mem</code> setting controls the amount of memory that can be used per query operation node, and is generally used for sorting data and hash tables. Currently it is set to 128MB. Any sort or hash operations which require more than this amount of memory will resort to swapping to disk, and will therefore take longer to complete. Taking into account the system RAM size of 106 GB and EDB&#39;s recommendation that <code>max_connections</code> be set to 100, a <code>work_mem</code> value of 128MB is recommended.<br></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Bear in mind, however, that changes to <code>max_connections</code> or the total RAM in the server will require the value of <code>work_mem</code> to be reviewed, as each connection can allocate this amount of memory for each sort or hash operation it performs. A general &#34;rule of thumb&#34; for this is determined by dividing 25% of the total system memory by <code>max_connections</code>. Therefore, a decrease in <code>max_connections</code> will allow for a higher value of <code>work_mem</code>.<br>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>work_mem</code> can also be set dynamically from the application. If it is known that a particular query will be sorting a large data set, it can be advantageous to increase the <code>work_mem</code> of that individual query (being careful not to over-allocate). For example, if the session requires 1 GB for <code>work_mem</code>, this would be accomplished with:<br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">set work_mem = '1GB';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would set the session&#39;s <code>work_mem</code> to a new value and allow subsequent queries within that session to utilise more memory for sorting or hashing. This can be set back to the standard value (as defined in postgresql.conf) by running the following:<br></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">reset work_mem;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_write_ahead_log"><a class="link" href="#_write_ahead_log">Write-Ahead Log</a></h4>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>archive_mode = on</code> 
+</td>
+<td class="hdlist2">
+<p>When archive_mode is enabled, completed WAL segments are sent to archive storage by the setting <code>archive_command</code>. It is strongly recommended that any production server have archive_mode turned on in order to enable the archiving of WAL logs for backup &amp; recovery, point in time recovery, etc..</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>archive_command = rsync %p &lt;some_directory&gt;/%f</code> 
+</td>
+<td class="hdlist2">
+<p>Consider using <code>rsync</code> rather than <code>scp</code> or <code>cp</code> for archiving of WAL logs. <code>cp</code> is not an atomic operation and can lead to corruption that will not be noticed until attempting to use an archived log for recovery.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>checkpoint_completion_target = 0.9</code> 
+</td>
+<td class="hdlist2">
+<p>This determines the amount of time in which PostgreSQL aims to complete a checkpoint. This means a checkpoint need not result in an I/O spike, and instead aims to spread the writes over a certain period of time. This time is calculated as a fraction of <code>checkpoint_timeout</code>, and the default is 0.5 (half). The higher the value, the smoother the I/O of the checkpoint. Note that each checkpoint finishes with a (potentially) large <code>fsync</code> and that the time consumed by this fsync can vary wildly. As such, it is not advisable to set this higher than 0.9.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>checkpoint_segments = 32</code> 
+</td>
+<td class="hdlist2">
+<p>This parameter is the number of WAL files that the database will cycle through before a checkpoint. Having this set too low means checkpoints will occur frequently and affect performance on a busy system. The cost of increasing this is longer recovery times, so it&#39;s suggested that this isn&#39;t set too high. It should also be noted that the amount of information written to disk will be <code>checkpoint_segments</code> * 16 MB (the size of a WAL segment). You should therefore expect to see a corresponding amount of I/O during a checkpoint.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>checkpoint_timeout = 10min</code> 
+</td>
+<td class="hdlist2">
+<p>Maximum time between automatic WAL checkpoints, in seconds. The default is five minutes (5min). Increasing this parameter can increase the amount of time needed for crash recovery. The more <code>checkpoint_segments</code> specified, the more time will be needed to complete a checkpoint. A value in the 5 min to 15 min range is most often adequate.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>checkpoint_warning = 1min</code> 
+</td>
+<td class="hdlist2">
+<p>Controls when the database should log information about checkpoints occurring too frequently into server logs. Because a <code>checkpoint_timeout</code> of 10min is being recommended, this parameter should be set to less than <code>checkpoint_timeout</code> to capture checkpoints being forced for reasons other than the timeout value being reached.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>wal_buffers = 64MB</code> 
+</td>
+<td class="hdlist2">
+<p>This controls the amount of memory space available for back ends to place WAL data prior to sync. WAL segments are 16MB each, so buffering a segment is very inexpensive memory-wise.  And larger buffer sizes have been observed to have a potentially very positive effect on performance in testing.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>wal_level = archive</code> 
+</td>
+<td class="hdlist2">
+<p>This controls the level of information that is written to the write-ahead log. The default of <code>minimal</code> is only sufficient for crash recovery, and cannot be used to restore backups or perform Point in time recovery. In order to restore from a base backup, this should be set to at least <code>archive</code>.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_query_tuning"><a class="link" href="#_query_tuning">Query Tuning</a></h4>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>cpu_tuple_cost = 0.03</code> 
+</td>
+<td class="hdlist2">
+<p>Specifies the relative cost of processing each row during a query. It is currently set to 0.01, but this is likely to be lower than optimal, and should be increased to 0.03 for a more realistic costing.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>effective_cache_size = 79GB</code> 
+</td>
+<td class="hdlist2">
+<p>While this parameter does not actually reserve any memory, it is used by PostgreSQL in planning queries. It indicates how much memory the operating system has available for caching data. Adjusting this value to 79GB (75% of RAM) from its current setting of 75GB is recommended.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>random_page_cost = 2</code> 
+</td>
+<td class="hdlist2">
+<p>This parameter specifies the relative cost of accessing a random page instead of a sequential page. It is currently set to 4, but this value is conservative and should be tuned downwards. Given the storage medium, it&#39;s recommended that this be changed to 2, which should increase the likelihood of indexes being used over sequential scans.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="autovacuum"><a class="link" href="#autovacuum">Autovacuum</a></h4>
+<div class="paragraph">
+<p>Vacuum and analyze operations should be performed periodically to clean up dead tuples (caused by deletions or updates) occupying database pages. This allows the space to be reused for new insertions and collecting statistics that enable the optimizer to choose the best possible query plans. If these run too infrequently, the database cluster can become bloated or provide inefficient query plans. If run too frequently, they can adversely affect system I/O activity.</p>
+</div>
+<div class="paragraph">
+<p>High-activity tables, where a large portion of the table changes frequently, will need vacuuming and analyzing more frequently than a table that doesn&#39;t change much, or consists of mainly new data being appended.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>autovacuum = on</code> 
+</td>
+<td class="hdlist2">
+<p>It is critically important that <code>autovacuum</code> be active on any database, even more so on an active production database. Turning off the autovacuum process will inevitably lead to poor performance, table and index bloat, and potentially catastrophic data loss due to <a href="http://www.postgresql.org/docs/current/static/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND">transaction ID wraparound</a>. While manual vacuum jobs are sometimes used in addition to autovacuum, they should not be used in place of autovacuum.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>autovacuum_vacuum_cost_delay = 5ms</code> 
+</td>
+<td class="hdlist2">
+<p>The default of 20ms is very conservative and can prevent vacuum from keeping up with changes. Decreasing it&#39;s value to 5ms is expected to yield increased performance. With testing, it is not at all uncommon to find performance gains while reducing this to as low as 2ms.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>autovacuum_max_workers = 6</code> 
+</td>
+<td class="hdlist2">
+<p>Often set in the range of 6-12 for busy production systems, 6 are recommended as a reasonable starting point, and adjusted upward as needed.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>autovacuum_naptime = 1min</code> 
+</td>
+<td class="hdlist2">
+<p>Naptime specifies the minimum delay between autovacuum runs on any given database. In each round the daemon examines the database and issues VACUUM and ANALYZE commands as needed for tables in that database. The delay is measured in seconds, and the default is one minute (1min). On busy databases with many writes, however, it can be beneficial to increase this to prevent autovacuum waking up too often. But it should be noted that tuning this setting too high can result in more work needed to be done in each vacuuming round.<br></p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As this setting determines the wake up time per database, an autovacuum worker process will begin as frequently as autovacuum_naptime / number of databases.
+For example, if autovacuum_naptime = 1min (60 seconds), and there were 60 databases, an autovacuum worker process would be started every second (60 seconds / 60 databases = 1 second).
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>autovacuum_vacuum_scale_factor = 0.2</code> 
+<br>
+<code>autovacuum_analyze_scale_factor = 0.1</code> 
+</td>
+<td class="hdlist2">
+<p>These parameters determine the percentage of a table that must change before the table will be scheduled for an autovacuum, and an autoanalyze respectively. The default for the <code>autovacuum_vacuum_scale_factor</code> is 0.2 (20%) and <code>autovacuum_analyze_scale_factor</code> is 0.1 (10%). While the default values perform acceptably for tables of a modest size (up to around 500MB), for larger tables they are too high.<br></p>
+<div class="paragraph">
+<p>As the majority of tables in <code>iPro</code> are less than 500 MB in size, these global default scale factors are adequate. For larger tables (as provided in the appendix <a href="#table-sizes">Table Sizes</a>), it is a better practice to set these parameters on the table level rather than globally.</p>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>autovacuum_vacuum_cost_limit = -1</code> 
+<br>
+<code>vacuum_cost_limit = 2000</code> 
+</td>
+<td class="hdlist2">
+<p>The default value of -1 for <code>autovacuum_vacuum_cost_limit</code> results in <code>autovacuum_vacuum_cost_limit</code> = <code>vacuum_cost_limit</code>. However, this value is distributed proportionally among the running autovacuum workers. This is done in order that the sum of the limits of each worker never exceeds the limit on this variable. Therefore, the default value of 200 for <code>vacuum_cost_limit</code> is generally too low for a busy database server with multiple autovacuum workers.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logging"><a class="link" href="#_logging">Logging</a></h4>
+<div class="paragraph">
+<p>The parameters below should be applied in order to provide greater insight into the operations and performance of the database. It is recommended that all be in place on any Postgres server so as to aid the database administrator in maintaining and troubleshooting the system. As raw text, these logs are very helpful to any DBA. But when utilizing a log analysis tool such as <a href="http://dalibo.github.io/pgbadger/">pgBadger</a>, tremendous insights into the operational health of the database, configuration settings potentially in need of adjustment, and queries that are likely in need of tuning.</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>log_line_prefix = &#39;%t [%p]: [%l-1] user=%u,db=%d &#39;</code> 
+</td>
+<td class="hdlist2">
+<p>Provides greater detail for each log event, as well as provides for compatibility with various log analysis tools.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>log_autovacuum_min_duration = 0</code> </dt>
+<dd>
+<p>Gives visibility into what autovacuum is doing (or possibly <em>not</em> doing).</p>
+</dd>
+<dt class="hdlist1"><code>log_checkpoints = on</code> </dt>
+<dd>
+<p>Provides visibility into how frequently checkpoints occur and how much each checkpoint does.</p>
+</dd>
+<dt class="hdlist1"><code>log_connections = on</code> </dt>
+<dd>
+<p>Tracks all connections so we can justify/refute max_connections. Also allows us to see which accounts are connecting and may need per-user defaults for work_mem, et al. Perhaps most importantly, this will show if connection pooling is required.</p>
+</dd>
+<dt class="hdlist1"><code>log_disconnections = on</code> </dt>
+<dd>
+<p>Keeps track of when people disconnect so we can see if there are users holding connections open for excessive amounts of time or in excessive numbers of connections.</p>
+</dd>
+<dt class="hdlist1"><code>log_lock_waits = on</code> </dt>
+<dd>
+<p>Logs lock waits &gt;= <code>deadlock_timeout</code>.</p>
+</dd>
+<dt class="hdlist1"><code>log_temp_files = 0</code> </dt>
+<dd>
+<p>Logs temporary files equal or larger than the specified size (in kB). This provides insight into whether work_mem is undersized or not. Also exposes malformed queries utilizing temp files that could instead be rewritten for more efficient use of indexes, in-memory sorting, etc..</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="db-parameters"><a class="link" href="#db-parameters">Summary Table</a></h4>
+<table class="tableblock frame-all grid-all" style="width: 80%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">parameter</th>
+<th class="tableblock halign-left valign-top">current value</th>
+<th class="tableblock halign-left valign-top">recommended value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>archive_mode</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>archive_command</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>(none)</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>rsync %p &lt;some_directory&gt;/%f</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_analyze_scale_factor</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.1</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.1</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_analyze_threshold</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>50</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>100</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_max_workers</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>3</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>6</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_naptime</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>1min</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>1min</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_vacuum_cost_delay</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>20ms</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>5ms</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_vacuum_cost_limit</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>-1</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>-1</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_vacuum_scale_factor</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.2</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.2</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>autovacuum_vacuum_threshold</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>50</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>100</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>bg_writer_delay</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>200ms</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>100ms</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>bgwriter_lru_maxpages</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>100</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>1000</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>bgwriter_lru_multiplier</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>2</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>4</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>checkpoint_completion_target</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.9</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.9</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>checkpoint_segments</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>32</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>32</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>checkpoint_timeout</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>5min</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>10min</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>checkpoint_warning</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>30s</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>1min</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>cpu_tuple_cost</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.01</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0.03</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>effective_cache_size</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>75GB</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>79GB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_autovacuum_min_duration</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>-1</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_checkpoints</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>off</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_connections</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>off</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_disconnections</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>off</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_line_prefix</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>%t [%p-%l] %q%u@%d</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>&#39;%t [%p]: [%l-1] user=%u,db=%d &#39;</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_lock_waits</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>off</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>on</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>log_temp_files</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>-1</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>0</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>maintenance_work_mem</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>2GB</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>6GB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>random_page_cost</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>4</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>2</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>shared_buffers</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>25GB</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>16GB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>wal_buffers</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>16MB</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>64MB</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>wal_level</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>minimal</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>archive</pre></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>vacuum_cost_limit</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>200</pre></div></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>2000</pre></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tuning"><a class="link" href="#tuning"><span class="icon"><i class="fa fa-wrench"></i></span>&#160;&#160;Performance Tuning</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>EDB has years of experience in providing performance-related solutions from both a database design and application response perspective. The various areas covered are the tuning of the operating system, the database and the application level.</p>
+</div>
+<div class="sect2">
+<h3 id="_tuning_guidelines"><a class="link" href="#_tuning_guidelines">Tuning Guidelines</a></h3>
+<div class="paragraph">
+<p>Performance is measured at both the application and database levels. Even if the OS and database are configured optimally, application code bottlenecks can cause massive slow-downs. Therefore best practices should be followed while developing queries for the application which will provide performance improvements at all levels.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Have a primary key on each table. For a list of tables not meeting this criteria, see appendix <a href="#missing-keys">Tables Without Primary Keys</a></p>
+</li>
+<li>
+<p>Avoid using COUNT(*) in SQL statements.</p>
+<div class="paragraph">
+<p>This leads to a full table scan and can cause useful data to be flushed out of shared buffers. The exception is for queries in PostgreSQL 9.2 or above, where the table has an index and avoids loading table pages in many cases.</p>
+</div>
+</li>
+<li>
+<p>Avoid using row values in the code. Instead, use bind variables which help the optimizer and protect against SQL injection.</p>
+</li>
+<li>
+<p>Write queries in such a way that the required result set uses the primary key index.</p>
+</li>
+<li>
+<p>Use EXPLAIN and/or EXPLAIN ANALYZE output for each query written in the code and tune accordingly. Tools such as <a href="http://explain.depesz.com/">explain.depesz.com</a> are helpful in understanding the output of these commands.</p>
+</li>
+<li>
+<p>Use indexed columns in your WHERE clause.</p>
+</li>
+<li>
+<p>Avoid sending independent data-modifying statements to the database.</p>
+<div class="paragraph">
+<p>Group multiple statements or create a database function on the server side and call the function. This will help the optimizer execute the compiled code which will also reduce the network traffic.</p>
+</div>
+</li>
+<li>
+<p>Avoid creating multiple indexes on the same columns unless they are partial indexes and don&#39;t overlap.</p>
+</li>
+<li>
+<p>Perform a manual ANALYZE operation whenever there are DDL changes.</p>
+</li>
+<li>
+<p>Always perform VACUUM ANALYZE after completion of any bulk load or significant data modifying operations on the database.</p>
+<div class="paragraph">
+<p>Ideally, use VACUUM FREEZE ANALYZE if your maintenance window permits. Including the FREEZE option can prevent a WAL-logged rewrite of all data at an inopportune time, such as in the middle of peak load.</p>
+</div>
+</li>
+<li>
+<p>Avoid using DROP TABLE where possible. During a DROP TABLE command PostgreSQL will clean out any shared_buffers that reference the table. To do this, Postgres needs to first determine which buffers reference the table and with a large shared_buffers setting this can take a significant amount of time. This should be taken into consideration when designing your application and avoid the frequent use of DROP TABLE. Instead, consider using TRUNCATE TABLE or possibly using TEMPORARY TABLES or UNLOGGED TABLES.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="reindexing"><a class="link" href="#reindexing">Reindexing</a></h3>
+<div class="paragraph">
+<p>There are two main reasons to use <code>REINDEX</code>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>An index has become corrupted, and no longer contains valid data. REINDEX provides a recovery method.</p>
+</li>
+<li>
+<p>The index contains a lot of mostly-empty index pages that are not being reclaimed. REINDEX provides a way to reduce the space consumption of the index by writing a new version of the index without the dead pages.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It is sometimes necessary to rebuild the indexes using the REINDEX command. On a production system, however, it is difficult to perform such costly operations on the database as this acquires various locks on the objects.</p>
+</div>
+<div class="paragraph">
+<p>It is not advisable to rebuild indexes during peak times and planning is required for such operations. Plan such costly operations whenever there will be a downtime for the application and database at the organizational level. <code>REINDEX</code> acquires various locks on the objects and performs dropping and recreating the index. In PostgreSQL 8.2 and later, indexes can be created concurrently as well if required. (Introduced in PostgreSQL 9.0, the command-line tool <code>reindexdb</code> performs the same function.)</p>
+</div>
+<div class="paragraph">
+<p>We also recommend performing <code>ANALYZE</code> after DDL changes or reindex operations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you suspect corruption of an index on a user table, you can simply rebuild that index, or all indexes on the table, using REINDEX INDEX or REINDEX TABLE.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For more information on re-indexing, see <a href="http://www.postgresql.org/docs/current/static/sql-reindex.html" class="bare">www.postgresql.org/docs/current/static/sql-reindex.html</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_partitioned_tables"><a class="link" href="#_partitioned_tables">Partitioned Tables</a></h3>
+<div class="paragraph">
+<p>The use of partitioned tables can be useful in improving the performance of queries that execute on big tables with large data sets. Large tables can be partitioned so that each partition acts as an individual table. Queries will then fetch data from only those partitions that will satisfy the query, thus improving performance. Application logic (SQL queries or code) must be assessed so that partitioning features can be utilised effectively. Dynamic tables which have large data sets are good candidates for partitioning.</p>
+</div>
+<div class="paragraph">
+<p>Partitioning provides the following benefits:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Query performance can be improved dramatically for certain kinds of queries.</p>
+</li>
+<li>
+<p>Bulk deletes may be accomplished by simply removing one of the partitions, if that requirement is planned into the partitioning design. DROP TABLE is far faster than a bulk DELETE, and also doesn&#39;t require any vacuuming to free up dead tuples.</p>
+</li>
+<li>
+<p>Seldom-used data can be migrated to cheaper and slower storage media.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>While using partitioning, set constraint_exclusion=partition in postgresql.conf otherwise the query search through all the partitions. (see below)</p>
+</div>
+<div class="sect3">
+<h4 id="_constraint_exclusion"><a class="link" href="#_constraint_exclusion">Constraint Exclusion</a></h4>
+<div class="paragraph">
+<p>To enable partitioning, ensure that <code>constraint_exclusion</code> is enabled in <code>postgresql.conf</code>. Without this, queries will not be optimized as desired (by default this parameter is set to partition). When this is set to <code>partiton</code> or <code>on</code>, the query planner uses the table constraints to optimize the queries by comparing query conditions with the CHECK constraints and omits scanning the tables for which the conditions contradict the constraints.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For more detailed information with examples, visit <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html" class="bare">www.postgresql.org/docs/current/static/ddl-partitioning.html</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clustered_tables"><a class="link" href="#_clustered_tables">Clustered Tables</a></h3>
+<div class="paragraph">
+<p>It is often the case that there will be an observable, potentially dramatic, impact in the speed of queries on tables clustered on the &#34;primary&#34; index utilized in a query. For example, if the first part of the <code>WHERE</code> clause is to filter for dates between X and Y in column <code>timestamp</code>, clustering a table on an index on <code>timestamp</code> will write the table to disk physically in the same order as the index. This results in very fast reads from disk between point X and point Y, rather than scattered reads throughout the table&#39;s data file. This is especially useful for archives and history tables that are no longer being updated.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Clustered tables (also know as Index Organized Tables in other RDBMS environments) organized by the index upon which they are partitioned can have a <em>significant</em> positive impact on query performance.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_database_i_span_hardware_considerations"><a class="link" href="#__span_class_icon_i_class_fa_fa_database_i_span_hardware_considerations"><span class="icon"><i class="fa fa-database"></i></span>&#160;&#160;Hardware Considerations</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_memory"><a class="link" href="#_memory">Memory</a></h3>
+<div class="paragraph">
+<p>Adequate system memory is widely considered to be the single most important physical characteristic of any database server. Today&#39;s servers are (by and large) more than thoroughly packed with processing power for even the most demanding loads. Therefore, the bottleneck in performance is most often the extremely slow process of writing to and reading from disk.</p>
+</div>
+<div class="paragraph">
+<p>The obvious solution to this problem is to essentially keep as much of the database in memory as possible, considering at least the size of the most frequently accessed tables, and size the RAM accordingly. However, the not-quite-so obvious consideration is found in the use of memory by database background processes; queries for sorting and joins; etc.. If this is not taken into account, a previously considered sufficient amount of memory may prove to be surprisingly inadequate.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Robert Haas, EDB Chief Database Architect, discusses this topic in depth in his blog post <a href="http://rhaas.blogspot.com/2014/08/memory-matters.html">Memory Matters</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If the amount of memory changes, kernel and database parameters related to memory usage and memory management will need to be adjusted accordingly. EDB Professional Services is available to offer guidance in this area should you be considering changing your server&#8217;s memory.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_storage"><a class="link" href="#_storage">Storage</a></h3>
+<div class="sect3">
+<h4 id="_current_architecture"><a class="link" href="#_current_architecture">Current Architecture</a></h4>
+<div class="paragraph">
+<p>The current data directory:<br>
+<code>/var/lib/postgresql/9.4/main</code></p>
+</div>
+<div class="paragraph">
+<p>is located on the following mount point with the given settings:<br>
+<code>/dev/dm-0 / ext4 rw,relatime,errors=remount-ro,data=ordered 0 0 (Tablespaces with actual data, are on different mount points)</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_disk_architecture"><a class="link" href="#_disk_architecture">Disk Architecture</a></h4>
+<div class="paragraph">
+<p>As separate segments of a cluster&#39;s structure on disk perform different tasks, separating segments on their own physical media can have a significant positive impact on server performance. Under ideal conditions, a basic architecture for any database system would have the following on separate media.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>operating system</p>
+</li>
+<li>
+<p>data files</p>
+</li>
+<li>
+<p>indexes</p>
+</li>
+<li>
+<p>archive log files / redo logs</p>
+</li>
+<li>
+<p>temporary tables &amp; tablespaces</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This reduces contention between the various processes accessing these files. It also makes it possible to utilize different filesystem types and specific characteristics of each that would be of benefit to one of the above, while detrimental to others. For example, indexes might be placed on a fast media type such as SSD, and a RAM disk might be created for temporary tables &amp; tablespaces. A particular file system type (as described below) benefits archived logs, but would be a poor choice for data files.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_file_system_types"><a class="link" href="#_file_system_types">File System Types</a></h4>
+<div class="sect4">
+<h5 id="_xfs_ext4_ext3"><a class="link" href="#_xfs_ext4_ext3">XFS/EXT4/EXT3</a></h5>
+<div class="paragraph">
+<p>These general purpose file systems are the most common in use on Linux database servers. However, as &#34;general purpose&#34;, they come with some default options that may not be suitable for hosting a database:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>noatime</code> 
+</td>
+<td class="hdlist2">
+<p>Should be set for the mount point used for the cluster&#39;s file-system so as to remove the overhead of maintaining access time updates to a file&#39;s meta-data, thereby improving performance.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>nobarrier</code> 
+</td>
+<td class="hdlist2">
+<p>If a storage system with a battery-backed non-volatile write cache is being used, and the filesystem being used is EXT3/EXT4 or XFS, consider using this option to prevent unnecessary flushing of write cache to disk.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>discard</code> 
+</td>
+<td class="hdlist2">
+<p>If SSD drives are in use, this attribute should be set to ensure that TRIM support is used, which will prevent performance degradation over time.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+There have been reports of data loss when using RAID 0 and TRIM enabled on Linux kernels 3.19.7+ or 4.0.2+. At this time EDB suggested that TRIM be disabled when using RAID 0. See <a href="https://bugzilla.kernel.org/show_bug.cgi?id=98501" class="bare">bugzilla.kernel.org/show_bug.cgi?id=98501</a> for more information.
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_ext2"><a class="link" href="#_ext2">EXT2</a></h5>
+<div class="paragraph">
+<p>For WAL files (transaction logs), there is no need to use an EXT3/4 file system. Use of EXT2 (or another non-journalling file system) is sufficient since data is only written sequentially and never read (unless in recovery mode).</p>
+</div>
+<div class="paragraph">
+<p>Utilizing a different mount point for pg_xlog with EXT2 file system type is recommended in order to avoid unnecessary journaling.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_tmpfs_ramfs"><a class="link" href="#_tmpfs_ramfs">TMPFS/RAMFS</a></h5>
+<div class="paragraph">
+<p>Using RAMFS or TMPFS, a portion of the physical memory of the server can be allocated to be used as a partition. Two primary examples of architectural changes that increase performance by taking advantage of the speed of a in-memory file system being:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The statistics collector shares data statistics with other processes through temporary files. These files are stored in the directory named by the <code>stats_temp_directory</code> parameter, <code>$PGDATA/pg_stat_tmp</code> by default. For better performance, <code>stats_temp_directory</code> can be pointed at a RAM-based file system, decreasing physical I/O requirements. When the server shuts down, a permanent copy of the statistics data is stored in the pg_stat subdirectory, so that statistics can be retained across server restarts.</p>
+</li>
+<li>
+<p>A data warehouse, reporting server, or simply a database which makes significant use of temporary tables/tablespaces for many sorts and joins, can benefit greatly from the use of a RAM-based file system.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_raid"><a class="link" href="#_raid">RAID</a></h4>
+<div class="paragraph">
+<p>Some form of RAID should be in use on the storage system being used to store database data for both performance and redundancy reasons. However, choosing the wrong RAID configuration can have a significant negative impact on database performance. We discuss various RAID configurations, from best to worst, below:</p>
+</div>
+<div class="sect4">
+<h5 id="_10"><a class="link" href="#_10">10</a></h5>
+<div class="paragraph">
+<p>RAID 10 (a.k.a. RAID 1+0) provides both great read and write performance, and also can tolerate losing a disk to failure. Like RAID 1, a standby disk should be available to replace.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_1"><a class="link" href="#_1">1</a></h5>
+<div class="paragraph">
+<p>RAID 1 is good for writes, and great for reads, and sacrifices capacity for redundancy by mirroring the disks. So while it has (at most) half the storage of a RAID 0 configuration, it can afford to lose a disk without data loss. But if RAID 1 is in use, a replacement disk will need to be permanently available to replace a dead drive. During the time a RAID array is in a degraded state (i.e. a failed disk needs replacing), the data is at risk as any additional failures would mean total loss.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_0"><a class="link" href="#_0">0</a></h5>
+<div class="paragraph">
+<p>RAID 0 has no write performance issues, and excellent read performance benefits. But in the case of a single disk failing, the entire set of striped disks becomes useless and all data is effectively lost.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+There have been reports of data loss when using RAID 0 and TRIM enabled on Linux kernels 3.19.7+ or 4.0.2+. At this time EDB suggested that TRIM be disabled when using RAID 0. See <a href="https://bugzilla.kernel.org/show_bug.cgi?id=98501" class="bare">bugzilla.kernel.org/show_bug.cgi?id=98501</a> for more information.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_5_6_50"><a class="link" href="#_5_6_50">5, 6, 50</a></h5>
+<div class="paragraph">
+<p>Although they have good sequential access performance, RAID 5 or 6 are probably the least desirable as, while they can tolerate disk failure, both have major write performance issues associated with them. Some RAID controllers mitigate performance issues at these RAID levels by supporting SSD drives as a non-volatile cache.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_life_ring_i_span_disaster_recovery_plan"><a class="link" href="#__span_class_icon_i_class_fa_fa_life_ring_i_span_disaster_recovery_plan"><span class="icon"><i class="fa fa-life-ring"></i></span>&#160;&#160;Disaster Recovery Plan</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>EDB’s Disaster Recovery plan has been developed for the delivery of business applications with minimum outage and minimal data loss when disaster strikes. This can be accomplished by implementing a reliable backup strategy and high availability concepts available in PostgreSQL. A disaster recovery plan is all about planning a recovery strategy for the database when the worst happens to the system. As part of the disaster recovery plan, EDB focuses on backup strategy and high availability.</p>
+</div>
+<div class="sect2">
+<h3 id="_current_backup_strategy"><a class="link" href="#_current_backup_strategy">Current Backup Strategy</a></h3>
+<div class="paragraph">
+<p>Pg-dump backup every night.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_types_of_backup_strategies"><a class="link" href="#_types_of_backup_strategies">Types of Backup Strategies</a></h3>
+<div class="paragraph">
+<p>PostgreSQL offers two types of backups: Logical (pg_dump) and Physical (online hot backup), in addition to the traditional backup of any database system that can be made from the file system when the database is shut down (cold backup).</p>
+</div>
+<div class="sect3">
+<h4 id="_logical_backup"><a class="link" href="#_logical_backup">Logical Backup</a></h4>
+<div class="paragraph">
+<p>A logical backup can provide a &#34;dump&#34; of the data and schemas stored in the database to a file (or files) on disk. The tool Postgres uses to accomplish this task is <code>pg_dump</code>. For documentation on the use of <code>pg_dump</code>, please see the <a href="http://www.postgresql.org/docs/current/static/backup-dump.html">documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>Periodic logical dumps are recommended even when physical backups are also in use. A logical dump can be valuable to have available in such situations as restoring a single table. Please note that <code>pg_dump</code> does not backup any of the globals in your cluster (roles, etc). You will need to run <code>pg_dumpall -g</code> in addition to <code>pg_dump</code> to have a complete backup of your cluster.</p>
+</div>
+<div class="paragraph">
+<p>It is always recommended to thoroughly test the backup for any data discrepancies or corruptions. <code>pg_dump</code> backups should be tested by performing a restore test at least once per quarter.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_physical_backup"><a class="link" href="#_physical_backup">Physical Backup</a></h4>
+<div class="paragraph">
+<p>Using Postgres&#39; physical backup utilities allow for the full file system level backup of a cluster while it is in operation.</p>
+</div>
+<div class="paragraph">
+<p>In order to be able to take online backups, WAL archiving must be configured. This is accomplished by setting the value of <code>archive_command</code> within <code>postgresql.conf</code>. This command allows the database to archive old WAL files to a location outside of the cluster for use in recovery operations. The command can be customized as necessary to fulfill any business requirements, but below is an example that would copy the old files to a directory called <code>archived_wal</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>wal_level = archive
+archive_mode = on
+archive_command = 'rsync %p /backup/archived_wal/%f'</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An online backup is simply a file-system level backup that can be safely performed once the database is put into backup mode. The easiest way to perform a base backup is to use the <a href="http://www.postgresql.org/docs/current/static/app-pgbasebackup.html"><code>pg_basebackup</code></a> tool. It can create a base backup either as regular files or as a tar archive. If more flexibility than <code>pg_basebackup</code> can provide is required, you can also make a base backup using the <a href="http://www.postgresql.org/docs/current/static/continuous-archiving.html#BACKUP-LOWLEVEL-BASE-BACKUP">low level API</a>.</p>
+</div>
+<div class="paragraph">
+<p><code>pg_basebackup</code> is used to take backups of a running PostgreSQL cluster, without affecting other clients connected to the database. <strong>These backups can be used for point-in-time recovery (PITR)</strong> (as well as the starting point for a log shipping or streaming replication standby servers). It makes a binary copy of the database cluster files, while making sure the system is put in and out of backup mode automatically. Backups are always taken of the entire database cluster. (It is not possible to back up individual databases or database objects. For individual database backups, a tool such as <code>pg_dump</code> must be used.)</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Archived WAL files play a key role during recovery. During backups, ensure that the ownership of any files is maintained. It is also essential to make sure that there is adequate free space available in the archive destination at all times. If an attempt to archive a WAL file fails, it can lead to WAL files building up in the cluster&#39;s <code>pg_xlog</code> directory until archiving can successfully continue. The archive of WAL file should itself be backed up as it is needed for successful recovery of filesystem-level backups. If any WAL files are lost, it may not be possible to recover from such a backup.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_documentation_training_tools"><a class="link" href="#_documentation_training_tools">Documentation, Training &amp; Tools</a></h3>
+<div class="paragraph">
+<p>The essential knowledge and skills required for successful backup and recovery are critical to the successful operation of a Postgres cluster, and while the <a href="http://www.postgresql.org/docs/current/static/backup.html">Backup &amp; Recovery documentation</a> provides an excellent starting point for an administrator tasked with these responsibilities. EDB also provides training on this topic that is highly recommended.</p>
+</div>
+<div class="paragraph">
+<p>A backup & recovery tool, such as <a href="#bart">EDB BART</a>, can also be of great assistance to a database administrator by greatly simplifying these error prone tasks, as opposed to developing an maintaining scripts and cron jobs for the purpose of backing up your Postgres databases.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_rocket_i_span_upgrading_postgres"><a class="link" href="#__span_class_icon_i_class_fa_fa_rocket_i_span_upgrading_postgres"><span class="icon"><i class="fa fa-rocket"></i></span>&#160;&#160;Upgrading Postgres</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_methods"><a class="link" href="#_methods">Methods</a></h3>
+<div class="paragraph">
+<p>There are three methods of upgrading PostgreSQL, each with its own advantages. These methods are: pg_dump (dump and restore), pg_upgrade, and logical replication. Each is briefly examined below.</p>
+</div>
+<div class="sect3">
+<h4 id="_pg_dump"><a class="link" href="#_pg_dump">pg_dump</a></h4>
+<div class="paragraph">
+<p><code>pg_dump</code> produces a logical dump of a database, which is much slower than <code>pg_upgrade</code>. This can, however, be useful if you only want to migrate individual databases one at a time, so that you can take a phased approach to upgrading. See also <a href="#_logical_backup">Logical Backup</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pg_upgrade"><a class="link" href="#_pg_upgrade">pg_upgrade</a></h4>
+<div class="paragraph">
+<p><code>pg_upgrade</code> is the quickest and easiest way to perform an upgrade and happens &#34;in-place&#34;, meaning nothing needs to be copied, dumped or moved. More information on pg_upgrade can be found in the <a href="http://www.postgresql.org/docs/current/static/pgupgrade.html">documentation</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logical_replication"><a class="link" href="#_logical_replication">logical replication</a></h4>
+<div class="sect4">
+<h5 id="_slony"><a class="link" href="#_slony">Slony</a></h5>
+<div class="paragraph">
+<p><a href="http://slony.info/">Slony</a>, a community project, can replicate between different versions of Postgres and can therefore be used as an upgrade path.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_xdb"><a class="link" href="#_xdb">xDB</a></h5>
+<div class="paragraph">
+<p>EDB&#39;s logical replication tool, <a href="#xDB">xDB</a> also provides the ability to replicate between different versions of Postgres and is backed by the experience and support of EDB.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_users_i_span_additional_products_services"><a class="link" href="#__span_class_icon_i_class_fa_fa_users_i_span_additional_products_services"><span class="icon"><i class="fa fa-users"></i></span>&#160;&#160;Additional Products &amp; Services</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_training_certifications"><a class="link" href="#_training_certifications">Training &amp; Certifications</a></h3>
+<div class="paragraph">
+<p>Given the critical nature of continuous and efficient operation of the production database, it is similarly as critical that staff tasked with its support and maintenance have the training necessary to effectively do so.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+At minimum, EDB recommends that personnel in such a position participate in our <a href="http://www.enterprisedb.com/store/products/dba-training/01t38000003LcwlAAC">Foundations of Postgre Administration</a> course and achieve, at minimum, the <a href="http://www.enterprisedb.com/training/certification">associate level of certification</a> in order to give them the base of skills and knowledge required.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With regard to an experienced development team, it is often the case that formal training that not only includes database development topics specific to Postgres, but also (and possibly more importantly) provides a solid foundation in tuning and simple database administration is found to be of tremendous value to the organization. Once a database has been properly tuned, well formed SQL that takes advantage of Postgres&#39; many features is of critical importance to continued performance and scalability. EDB has two courses, <a href="http://www.enterprisedb.com/store/products/dba-training/01t50000001tmCcAAI">PostgreSQL for Developers and Architects</a> and <a href="http://www.enterprisedb.com/store/products/dba-training/01t50000001uafUAAQ">Tuning and Maintenance for PostgreSQL</a>, that address these topics in depth.</p>
+</div>
+<div class="paragraph">
+<p>More information on these and many other course offerings and training delivery options (such as on-demand, in person, etc.) is available on our site at <a href="http://www.enterprisedb.com/products-services-training/training">EDB - Postgres Training and Certification Services</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_edb_postgres_enterprise_manager_epem"><a class="link" href="#_edb_postgres_enterprise_manager_epem">EDB Postgres Enterprise Manager (EPEM)</a></h3>
+<div class="paragraph">
+<p>EDB Postgres Enterprise Manager is the only solution available today that allows you to intelligently manage, monitor, and tune large numbers of Postgres database servers (both PostgreSQL and EDB Postgres Advanced Server) enterprise-wide from an integrated graphical console. We believe it would be an excellent tool for Alliance Data Management to use as you move forward with your deployment of PostgreSQL.</p>
+</div>
+<div class="paragraph">
+<p>With EDB Postgres Enterprise Manager customizable dashboards, a tuning wizard, replication alerts, an update monitor, and much more, no other tool comes close to providing so many productivity features with such ease of use in a professional enterprise grade monitoring and management tool for Postgres.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Web-based client that allows you access to your monitoring data anytime, from anywhere.</p>
+</li>
+<li>
+<p>Log Manager that configures logging across multiple databases at once and displays a consolidated view of all logs.</p>
+</li>
+<li>
+<p>SSH tunneling for easier access outside the firewall.</p>
+</li>
+<li>
+<p>Ability to use EDB Postgres Advanced Server as the backend database for the central EPEM server.</p>
+</li>
+<li>
+<p>Multiple monitoring improvements.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information and to download EPEM for a free trial, please visit <a href="http://www.enterprisedb.com/products-services-training/products/postgres-enterprise-manager">EDB - Postgres Enterprise Manager</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_edb_postgres_failover_manager_epfm"><a class="link" href="#_edb_postgres_failover_manager_epfm">EDB Postgres Failover Manager (EPFM)</a></h3>
+<div class="paragraph">
+<p>EDB Postgres Failover Manager adds fault tolerance to database clusters to minimize downtime when a master database fails by keeping data online in High Availability configurations, and provides the cluster health monitoring, node/database failure detection, and automatic failover mechanisms needed for integration into a variety of stringent 9’s high availability solutions.</p>
+</div>
+<div class="paragraph">
+<p>Features include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Application-transparent automatic failover from a downed master database to a promoted streaming replica standby database requiring no changes to your application code. The streaming replica may be in either warm or hot standby modes.</p>
+</li>
+<li>
+<p>A witness node architecture to prevent false failovers and ‘split brain’ scenarios, in which two nodes in the cluster both ‘think’ they are the master, a situation that can lead to data corruption.</p>
+</li>
+<li>
+<p>A variety of health checks guard against unnecessary or false failovers.</p>
+</li>
+<li>
+<p>Multiple configurable failover detection and failover options, including manual failover by an administrator.</p>
+</li>
+<li>
+<p>Configurable fencing operations (by virtual IP or load balancers) ensure that failed nodes don&#39;t accidentally rejoin the HA cluster causing possible loss of data.</p>
+</li>
+<li>
+<p>Automatic email notifications to alert the administrator of changes in cluster health conditions and keep the DBA informed at all stages of the failover process.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information and to download EPFM for a free trial, please visit <a href="http://www.enterprisedb.com/products/edb-failover-manager">EDB Postgres Failover Manager</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bart"><a class="link" href="#bart">EDB Postgres Backup and Recovery (EPBR)</a></h3>
+<div class="paragraph">
+<p>Database administrators today typically have to create complex scripts, manage backup file naming and storage, move files for recovery, create special recovery configuration files, manage file permissions, and clean up after every recovery event. At its best, this complex set of tasks has many points of potential problems. At its worst, it may discourage DBAs from performing backups effectively — jeopardizing organizational data when a recovery is needed.</p>
+</div>
+<div class="paragraph">
+<p>Based on best practices and built by the world leader in Postgres tools, EDB Postgres Backup and Recovery makes it simple and easy for database administrators to safeguard organizational data.</p>
+</div>
+<div class="paragraph">
+<p>For more information and to download EPBR for a free trial, please visit <a href="http://www.enterprisedb.com/edb-backup-and-recovery-tool">EDB Postgres Backup and Recovery</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="xDB"><a class="link" href="#xDB">EDB Postgres Replication Server (EPRS)</a></h3>
+<div class="paragraph">
+<p>If your organization&#39;s database infrastructure demands dictate the need for logical replication between servers, EDB Postgres Replication Server provides an excellent solution, backed by the experience and support of EnterpriseDB&#174;. EPRS is capable of both single master (PostgreSQL/EDB Postgres Advanced Server/Oracle/SQL Server) and multi-master replication (PostgreSQL/EDB Postgres Advanced Server).</p>
+</div>
+<div class="paragraph">
+<p>For more information and to download xDB for a free trial, please visit our <a href="http://www.enterprisedb.com/products-overview/">products page</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_remotedba_service_rdba"><a class="link" href="#_remotedba_service_rdba">RemoteDBA Service (RDBA)</a></h3>
+<div class="paragraph">
+<p>EDB RemoteDBA Service (RDBA) provides comprehensive high impact results from the world&#39;s leading provider of Postgres services, products and expertise — including key leaders and developers of the open source PostgreSQL Global Development Group. These services cover every aspect of your database system ensuring worry free operation and growth for years.</p>
+</div>
+<div class="paragraph">
+<p>RDBA allows you to immediately apply qualified manpower where you need it for either short or long term engagements. And all this in a highly cost effective manner tailored to your needs. Our DBAs have years of Postgres experience to apply to your systems and the deepest set of community resources to utilize should tough issues arise.</p>
+</div>
+<div class="paragraph">
+<p>RemoteDBA is provided is a premium level service that provides you with a fundamental monitoring setup that no database system should be without. EDB monitors your database in real time 24x7 and notifies your staff when any critical events occur that threaten your systems operations. Regular status reports keep you appraised of the ongoing health of your database.</p>
+</div>
+<div class="paragraph">
+<p>In addition to 24x7 Monitoring, your software is kept up-to-date and patched; and the RDBA team provides database technical support, escalated issue management, and backup verification. The Service also includes an Architectural Health Check that reviews critical characteristics of your database for best practices.</p>
+</div>
+<div class="paragraph">
+<p>Subscribers are assigned a specific Technical Lead who will advise you on your database health status, and whose duties can also include assistance with set up of point-in-time-recovery, replication, dev/test environments, users, security, and many more services. Your Remote DBA can help you tune queries, partition tables and offer advice in many other areas for worry free care of your database infrastructure.</p>
+</div>
+<div class="paragraph">
+<p>The above is but a brief overview of RemoteDBA Services. For more information, please visit <a href="http://www.enterprisedb.com/services/packaged-services/remote-dba">EDB - RemoteDBA Services</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__span_class_icon_i_class_fa_fa_copy_i_span_appendices"><a class="link" href="#__span_class_icon_i_class_fa_fa_copy_i_span_appendices"><span class="icon"><i class="fa fa-copy"></i></span>&#160;&#160;Appendices</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="shm-snippet"><a class="link" href="#shm-snippet">Kernel Shared Memory</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">page_size=`getconf PAGE_SIZE`
+phys_pages=`getconf _PHYS_PAGES`
+
+shmall=`expr $phys_pages / 2`
+shmmax=`expr $shmall \* $page_size`
+
+echo \# Maximum shared segment size in bytes
+echo kernel.shmmax = $shmmax
+echo \# Maximum number of shared memory segments in pages
+echo kernel.shmall = $shmall</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_database_sizes"><a class="link" href="#_database_sizes">Database Sizes</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">  datname  | pg_size_pretty
+-----------+----------------
+ iPro      | 640 GB
+ postgres  | 6556 kB
+ template1 | 6548 kB
+ template0 | 6417 kB</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_non_default_db_parameters"><a class="link" href="#_non_default_db_parameters">Non-Default DB Parameters</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">             name             |                 setting                  |     boot_val      | unit
+------------------------------+------------------------------------------+-------------------+------
+ application_name             | ahctool                                  |                   |
+ archive_command              | /bin/cp -i %p /mnt/SAN/archive/%f        |                   |
+ archive_mode                 | on                                       | off               |
+ checkpoint_completion_target | 0.9                                      | 0.5               |
+ checkpoint_segments          | 32                                       | 3                 |
+ client_encoding              | UTF8                                     | SQL_ASCII         |
+ constraint_exclusion         | on                                       | partition         |
+ default_text_search_config   | pg_catalog.english                       | pg_catalog.simple |
+ effective_cache_size         | 9830400                                  | 524288            | 8kB
+ lc_collate                   | en_US.UTF-8                              | C                 |
+ lc_ctype                     | en_US.UTF-8                              | C                 |
+ lc_messages                  | en_US.UTF-8                              |                   |
+ lc_monetary                  | en_US.UTF-8                              | C                 |
+ lc_numeric                   | en_US.UTF-8                              | C                 |
+ lc_time                      | en_US.UTF-8                              | C                 |
+ listen_addresses             | *                                        | localhost         |
+ log_file_mode                | 0600                                     | 384               |
+ log_line_prefix              | %t [%p-%l] %q%u@%d                       |                   |
+ log_timezone                 | localtime                                | GMT               |
+ maintenance_work_mem         | 2097152                                  | 65536             | kB
+ max_stack_depth              | 2048                                     | 100               | kB
+ server_encoding              | UTF8                                     | SQL_ASCII         |
+ shared_buffers               | 3276800                                  | 1024              | 8kB
+ ssl                          | on                                       | off               |
+ ssl_cert_file                | /etc/ssl/certs/ssl-cert-snakeoil.pem     | server.crt        |
+ ssl_key_file                 | /etc/ssl/private/ssl-cert-snakeoil.key   | server.key        |
+ stats_temp_directory         | /var/run/postgresql/9.4-main.pg_stat_tmp | pg_stat_tmp       |
+ tcp_keepalives_count         | 9                                        | 0                 |
+ tcp_keepalives_idle          | 7200                                     | 0                 | s
+ tcp_keepalives_interval      | 75                                       | 0                 | s
+ TimeZone                     | localtime                                | GMT               |
+ transaction_isolation        | read committed                           | default           |
+ unix_socket_permissions      | 0777                                     | 511               |
+ wal_buffers                  | 2048                                     | -1                | 8kB
+ wal_level                    | archive                                  | minimal           |
+ work_mem                     | 131072                                   | 4096              | kB</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="unused-indexes"><a class="link" href="#unused-indexes">Unused Indexes</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">          reason           | schemaname |       tablename        |                      indexname                      | index_scan_pct | scans_per_write | index_size | table_size
+---------------------------+------------+------------------------+-----------------------------------------------------+----------------+-----------------+------------+------------
+ Never Used Indexes        | rollup     | tblmovement3qtr14      | ix_tblmovement3qtr14_scandetailv2                   |           0.00 |            0.00 | 8517 MB    | 17 GB
+ Never Used Indexes        | rollup     | tblmovement3qtr14      | ix_tblmovement3qtr14_scandetail                     |           0.00 |            0.00 | 8517 MB    | 17 GB
+ Never Used Indexes        | rollup     | tblmovement2qtr14      | ix_tblmovement2qtr14_scandetail                     |           0.00 |            0.00 | 8067 MB    | 16 GB
+ Never Used Indexes        | rollup     | tblmovement2qtr14      | ix_tblmovement2qtr14_scandetailv2                   |           0.00 |            0.00 | 8067 MB    | 16 GB
+ Never Used Indexes        | rollup     | tblmovement4qtr12      | ix_tblmovement4qtr12_scandetail                     |           0.00 |            0.00 | 7187 MB    | 15 GB
+ Never Used Indexes        | rollup     | tblmovement4qtr12      | ix_tblmovement4qtr12_scandetailv2                   |           0.00 |            0.00 | 7187 MB    | 15 GB
+ Never Used Indexes        | rollup     | tblmovement3qtr14      | ix_tblmovement3qtr14_upc                            |           0.00 |            0.00 | 6615 MB    | 17 GB
+ Never Used Indexes        | rollup     | tblmovement1qtr14      | ix_tblmovement1qtr14_scandetail                     |           0.00 |            0.00 | 6437 MB    | 13 GB
+ Never Used Indexes        | rollup     | tblmovement1qtr14      | ix_tblmovement1qtr14_scandetailv2                   |           0.00 |            0.00 | 6437 MB    | 13 GB
+ Never Used Indexes        | rollup     | tblmovement2qtr14      | ix_tblmovement2qtr14_upc                            |           0.00 |            0.00 | 6265 MB    | 16 GB
+ Never Used Indexes        | rollup     | tblmovement4qtr12      | ix_tblmovement4qtr12_upc                            |           0.00 |            0.00 | 5582 MB    | 15 GB
+ Never Used Indexes        | rollup     | tblmovement1qtr14      | ix_tblmovement1qtr14_upc                            |           0.00 |            0.00 | 4999 MB    | 13 GB
+ Never Used Indexes        | rollup     | tblmovement4qtr13      | ix_tblmovement4qtr13_scandetail                     |           0.00 |            0.00 | 4899 MB    | 10211 MB
+ Never Used Indexes        | rollup     | tblmovement4qtr13      | ix_tblmovement4qtr13_scandetailv2                   |           0.00 |            0.00 | 4899 MB    | 10211 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr13      | ix_tblmovement2qtr13_scandetail                     |           0.00 |            0.00 | 4869 MB    | 10162 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr13      | ix_tblmovement2qtr13_scandetailv2                   |           0.00 |            0.00 | 4869 MB    | 10162 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr13      | ix_tblmovement3qtr13_scandetail                     |           0.00 |            0.00 | 4491 MB    | 9360 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr13      | ix_tblmovement3qtr13_scandetailv2                   |           0.00 |            0.00 | 4491 MB    | 9360 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr13      | ix_tblmovement1qtr13_scandetail                     |           0.00 |            0.00 | 3959 MB    | 8239 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr13      | ix_tblmovement1qtr13_scandetailv2                   |           0.00 |            0.00 | 3959 MB    | 8239 MB
+ Never Used Indexes        | rollup     | tblmovement4qtr13      | ix_tblmovement4qtr13_upc                            |           0.00 |            0.00 | 3805 MB    | 10211 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr13      | ix_tblmovement2qtr13_upc                            |           0.00 |            0.00 | 3780 MB    | 10162 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr12      | ix_tblmovement3qtr12_scandetail                     |           0.00 |            0.00 | 3542 MB    | 7365 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr12      | ix_tblmovement3qtr12_scandetailv2                   |           0.00 |            0.00 | 3542 MB    | 7365 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr13      | ix_tblmovement3qtr13_upc                            |           0.00 |            0.00 | 3488 MB    | 9360 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr12      | ix_tblmovement2qtr12_scandetailv2                   |           0.00 |            0.00 | 3474 MB    | 7225 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr12      | ix_tblmovement2qtr12_scandetail                     |           0.00 |            0.00 | 3474 MB    | 7225 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr12      | ix_tblmovement1qtr12_scandetail                     |           0.00 |            0.00 | 3288 MB    | 6759 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr12      | ix_tblmovement1qtr12_scandetailv2                   |           0.00 |            0.00 | 3288 MB    | 6759 MB
+ Never Used Indexes        | rollup     | tblmovement4qtr11      | ix_tblmovement4qtr11_scandetail                     |           0.00 |            0.00 | 3226 MB    | 6626 MB
+ Never Used Indexes        | rollup     | tblmovement4qtr11      | ix_tblmovement4qtr11_scandetailv2                   |           0.00 |            0.00 | 3226 MB    | 6626 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr13      | ix_tblmovement1qtr13_upc                            |           0.00 |            0.00 | 3075 MB    | 8239 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr12      | ix_tblmovement3qtr12_upc                            |           0.00 |            0.00 | 2751 MB    | 7365 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr11      | ix_tblmovement3qtr11_scandetailv2                   |           0.00 |            0.00 | 2728 MB    | 5672 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr11      | ix_tblmovement3qtr11_scandetail                     |           0.00 |            0.00 | 2728 MB    | 5672 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr12      | ix_tblmovement2qtr12_upc                            |           0.00 |            0.00 | 2698 MB    | 7225 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr11      | ix_tblmovement1qtr11_scandetail                     |           0.00 |            0.00 | 2611 MB    | 5429 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr11      | ix_tblmovement1qtr11_scandetailv2                   |           0.00 |            0.00 | 2611 MB    | 5429 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr11      | ix_tblmovement2qtr11_scandetailv2                   |           0.00 |            0.00 | 2571 MB    | 5346 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr11      | ix_tblmovement2qtr11_scandetail                     |           0.00 |            0.00 | 2571 MB    | 5346 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr12      | ix_tblmovement1qtr12_upc                            |           0.00 |            0.00 | 2553 MB    | 6759 MB
+ Never Used Indexes        | rollup     | tblmovement4qtr11      | ix_tblmovement4qtr11_upc                            |           0.00 |            0.00 | 2505 MB    | 6626 MB
+ Never Used Indexes        | rollup     | tblmovement3qtr11      | ix_tblmovement3qtr11_upc                            |           0.00 |            0.00 | 2119 MB    | 5672 MB
+ Never Used Indexes        | rollup     | tblmovement1qtr11      | ix_tblmovement1qtr11_upc                            |           0.00 |            0.00 | 2028 MB    | 5429 MB
+ Never Used Indexes        | rollup     | tblmovement2qtr11      | ix_tblmovement2qtr11_upc                            |           0.00 |            0.00 | 1997 MB    | 5346 MB
+ Never Used Indexes        | ssd        | scandetail10           | ix_scandetail10__csv                                |           0.00 |            0.00 | 272 MB     | 1879 MB
+ Never Used Indexes        | ssd        | scandetail7            | ix_scandetailp7__csv                                |           0.00 |            0.00 | 267 MB     | 1774 MB
+ Never Used Indexes        | ssd        | scandetail10           | ix_storecode_plu_scanbegin_scanend__scandetail10    |           0.00 |            0.00 | 260 MB     | 1879 MB
+ Never Used Indexes        | ssd        | scandetail4            | ix_scandetail4__csv                                 |           0.00 |            0.00 | 257 MB     | 1665 MB
+ Never Used Indexes        | ssd        | scandetail2            | ix_scandetail2__csv                                 |           0.00 |            0.00 | 256 MB     | 1485 MB
+ Never Used Indexes        | ssd        | scandetail7            | ix_storecode_plu_scanbegin_scanend__scandetailp7    |           0.00 |            0.00 | 252 MB     | 1774 MB
+ Never Used Indexes        | ssd        | scandetail12           | ix_scandetail12__csv                                |           0.00 |            0.00 | 242 MB     | 1680 MB
+ Never Used Indexes        | ssd        | scandetail6            | ix_scandetail6__csv                                 |           0.00 |            0.00 | 237 MB     | 1586 MB
+ Never Used Indexes        | ssd        | scandetail4            | ix_storecode_plu_scanbegin_scanend__scandetail4     |           0.00 |            0.00 | 235 MB     | 1665 MB
+ Never Used Indexes        | ssd        | scandetail12           | ix_storecode_plu_scanbegin_scanend__scandetail12    |           0.00 |            0.00 | 230 MB     | 1680 MB
+ Never Used Indexes        | ssd        | scandetail6            | ix_storecode_plu_scanbegin_scanend__scandetail6     |           0.00 |            0.00 | 226 MB     | 1586 MB
+ Never Used Indexes        | ssd        | scandetail2            | ix_storecode_plu_scanbegin_scanend__scandetail2     |           0.00 |            0.00 | 224 MB     | 1485 MB
+ Never Used Indexes        | ssd        | scandetail13           | ix_scandetail13__csv                                |           0.00 |            0.00 | 224 MB     | 1566 MB
+ Never Used Indexes        | ssd        | scandetail13           | ix_storecode_plu_scanbegin_scanend__scandetail13    |           0.00 |            0.00 | 215 MB     | 1566 MB
+ Never Used Indexes        | ssd        | scandetail11           | ix_scandetail11__csv                                |           0.00 |            0.00 | 211 MB     | 1477 MB
+ Never Used Indexes        | ssd        | scandetail3            | ix_scandetail3__csv                                 |           0.00 |            0.00 | 206 MB     | 1200 MB
+ Never Used Indexes        | ssd        | scandetail11           | ix_storecode_plu_scanbegin_scanend__scandetail11    |           0.00 |            0.00 | 202 MB     | 1477 MB
+ Never Used Indexes        | ssd        | scandetail1            | ix_scandetail1__csv                                 |           0.00 |            0.00 | 193 MB     | 1142 MB
+ Never Used Indexes        | ssd        | scandetail3            | ix_storecode_plu_scanbegin_scanend__scandetail3     |           0.00 |            0.00 | 187 MB     | 1200 MB
+ Never Used Indexes        | ssd        | scandetail1            | ix_ticketdate_sd1                                   |           0.00 |            0.00 | 175 MB     | 1142 MB
+ Never Used Indexes        | ssd        | scandetail1            | ix_storecode_plu_scanbegin_scanend__scandetail1     |           0.00 |            0.00 | 170 MB     | 1142 MB
+ Never Used Indexes        | ssd        | sdsummary7             | ix_contractid_sheetname_sd7                         |           0.00 |            0.00 | 56 MB      | 395 MB
+ Never Used Indexes        | ssd        | sdsummary10            | ix_contractid_sheetname_sd10                        |           0.00 |            0.00 | 51 MB      | 371 MB
+ Never Used Indexes        | ssd        | sdsummary4             | ix_contractid_sheetname_sd4                         |           0.00 |            0.00 | 51 MB      | 350 MB
+ Never Used Indexes        | ssd        | sdsummary6             | ix_contractid_sheetname_sd6                         |           0.00 |            0.00 | 51 MB      | 358 MB
+ Never Used Indexes        | ssd        | sdsummary5             | ix_contractid_sheetname_sd5                         |           0.00 |            0.00 | 47 MB      | 329 MB
+ Never Used Indexes        | ssd        | sdsummary12            | ix_contractid_sheetname_sd12                        |           0.00 |            0.00 | 46 MB      | 332 MB
+ Never Used Indexes        | ssd        | sdsummary2             | ix_contractid_sheetname_sd2                         |           0.00 |            0.00 | 43 MB      | 297 MB
+ Never Used Indexes        | ssd        | sdsummary13            | ix_contractid_sheetname_sd13                        |           0.00 |            0.00 | 41 MB      | 295 MB
+ Never Used Indexes        | ssd        | sdsummary11            | ix_contractid_sheetname_sd11                        |           0.00 |            0.00 | 41 MB      | 298 MB
+ Never Used Indexes        | ssd        | sdsummary3             | ix_contractid_sheetname_sd3                         |           0.00 |            0.00 | 37 MB      | 265 MB
+ Never Used Indexes        | ssd        | sdsummary1             | ix_contractid_sheetname_sd1                         |           0.00 |            0.00 | 34 MB      | 240 MB
+ Never Used Indexes        | contracts  | kraft_contractdata     | ix_kraftdata_awgcode                                |           0.00 |            0.00 | 30 MB      | 285 MB
+ Never Used Indexes        | contracts  | kraft_contractdata     | ix_kraftdata_upc                                    |           0.00 |            0.00 | 26 MB      | 285 MB
+ Never Used Indexes        | ssd        | scandetail9            | ix_scandetail9__csv                                 |           0.00 |            0.00 | 18 MB      | 82 MB
+ Never Used Indexes        | ssd        | scandetail9            | ix_storecode_plu_scanbegin_scanend__scandetail9     |           0.00 |            0.00 | 16 MB      | 82 MB
+ Never Used Indexes        | ssd        | sdsummary9             | ix_contractid_sheetname_sd9                         |           0.00 |            0.00 | 14 MB      | 49 MB
+ Never Used Indexes        | ssd        | scandetail5            | ix_scandetail5__csv                                 |           0.00 |            0.00 | 8984 kB    | 55 MB
+ Never Used Indexes        | ssd        | scandetail5            | ix_storecode_plu_scanbegin_scanend__scandetail5     |           0.00 |            0.00 | 8072 kB    | 55 MB
+ Never Used Indexes        | contracts  | ca_contractdata        | ix_cadata_awgcode                                   |           0.00 |            0.00 | 5192 kB    | 53 MB
+ Never Used Indexes        | contracts  | ca_contractdata        | ix_cadata_upc                                       |           0.00 |            0.00 | 4208 kB    | 53 MB
+ Never Used Indexes        | rebill     | storexcontract         | ix_sxc_contactid_cversion_sheetname                 |           0.00 |            0.00 | 1928 kB    | 10120 kB
+ Never Used Indexes        | contracts  | mdlz_contractdata      | ix_mdlzdata_upc                                     |           0.00 |            0.00 | 1496 kB    | 12 MB
+ Never Used Indexes        | rebill     | storexcontract         | ix_sxc_cbegin_cend                                  |           0.00 |            0.00 | 1424 kB    | 10120 kB
+ Never Used Indexes        | contracts  | gm_contractdata        | ix_gmdata_upc                                       |           0.00 |            0.00 | 1344 kB    | 12 MB
+ Never Used Indexes        | contracts  | gm_contractdata        | ix_gmdata_awgcode                                   |           0.00 |            0.00 | 1144 kB    | 12 MB
+ Never Used Indexes        | rebill     | storexcontract         | ixc_sxc_pkey                                        |           0.00 |            0.00 | 1128 kB    | 10120 kB
+ Never Used Indexes        | rebill     | storexcontract         | ix_sxc_awgstorenum                                  |           0.00 |            0.00 | 1128 kB    | 10120 kB
+ Never Used Indexes        | contracts  | mdlz_contractdata      | ix_mdlzdata_awgcode                                 |           0.00 |            0.00 | 1120 kB    | 12 MB
+ Never Used Indexes        | contracts  | camp_contractdata      | ix_campdata_awgcode                                 |           0.00 |            0.00 | 504 kB     | 4888 kB
+ Never Used Indexes        | contracts  | camp_contractdata      | ix_campdata_upc                                     |           0.00 |            0.00 | 432 kB     | 4888 kB
+ Never Used Indexes        | contracts  | sheetmeta              | ix_promotype                                        |           0.00 |            0.00 | 328 kB     | 3112 kB
+ Never Used Indexes        | contracts  | sheetmeta              | ix_sheetmeta_iprovennum                             |           0.00 |            0.00 | 312 kB     | 3112 kB
+ Never Used Indexes        | contracts  | kraft_contractdatatest | ix_kraft_datatest_containerid_cversion_sheetname    |           0.00 |            0.00 | 224 kB     | 1032 kB
+ Never Used Indexes        | ssd        | scandetailnopay        | ix_ticketdate_sdnopay                               |           0.00 |            0.00 | 216 kB     | 880 kB
+ Never Used Indexes        | ssd        | scandetailnopay        | ix_scandetailnopay__csv                             |           0.00 |            0.00 | 208 kB     | 880 kB
+ Never Used Indexes        | ssd        | scandetailnopay        | ix_storecode_plu_scanbegin_scanend__scandetailnopay |           0.00 |            0.00 | 200 kB     | 880 kB
+ Never Used Indexes        | contracts  | kl_contractdata        | ix_kldata_awgcode                                   |           0.00 |            0.00 | 176 kB     | 1512 kB
+ Never Used Indexes        | contracts  | nes_contractdata       | ix_nesdata_upc                                      |           0.00 |            0.00 | 136 kB     | 880 kB
+ Never Used Indexes        | contracts  | kl_contractdata        | ix_kldata_upc                                       |           0.00 |            0.00 | 136 kB     | 1512 kB
+ Never Used Indexes        | contracts  | hrsh_contractdata      | ix_hrshdata_awgcode                                 |           0.00 |            0.00 | 112 kB     | 928 kB
+ Never Used Indexes        | contracts  | nes_contractdata       | ix_nesdata_awgcode                                  |           0.00 |            0.00 | 96 kB      | 880 kB
+ Never Used Indexes        | contracts  | contractid             | ix_contractid_deleted                               |           0.00 |            0.00 | 88 kB      | 496 kB
+ Never Used Indexes        | contracts  | sm_contractdata        | ix_smdata_upc                                       |           0.00 |            0.00 | 72 kB      | 480 kB
+ Never Used Indexes        | contracts  | sm_contractdata        | ix_smdata_awgcode                                   |           0.00 |            0.00 | 72 kB      | 480 kB
+ Never Used Indexes        | ssd        | flextest               | ix_contractend                                      |           0.00 |            0.00 | 56 kB      | 96 kB
+ Never Used Indexes        | contracts  | jns_contractdata       | ix_jnsdata_awgcode                                  |           0.00 |            0.00 | 32 kB      | 128 kB
+ Never Used Indexes        | contracts  | pepsi_contractdata     | ix_pepsidata_upc                                    |           0.00 |            0.00 | 32 kB      | 80 kB
+ Never Used Indexes        | contracts  | jns_contractdata       | ix_jnsdata_upc                                      |           0.00 |            0.00 | 32 kB      | 128 kB
+ Never Used Indexes        | contracts  | rynds_contractdata     | ix_ryndsdata_upc                                    |           0.00 |            0.00 | 16 kB      | 72 kB
+ Never Used Indexes        | contracts  | dsy_contractdata       | ix_dsydata_awgcode                                  |           0.00 |            0.00 | 16 kB      | 80 kB
+ Never Used Indexes        | contracts  | pur_contractdata       | ix_purdata_awgcode                                  |           0.00 |            0.00 | 16 kB      | 32 kB
+ Never Used Indexes        | contracts  | pur_contractdata       | ix_purdata_upc                                      |           0.00 |            0.00 | 16 kB      | 32 kB
+ Never Used Indexes        | rebill     | sheetmeta              | ix_sheetmeta_contractid_cversion_sheetname          |           0.00 |            0.00 | 16 kB      | 24 kB
+ Never Used Indexes        | rebill     | sheetmeta              | ix_promotype                                        |           0.00 |            0.00 | 16 kB      | 24 kB
+ Never Used Indexes        | contracts  | master_contractdata    | ix_masterdata_awgcode                               |           0.00 |            0.00 | 16 kB      | 56 kB
+ Never Used Indexes        | contracts  | master_contractdata    | ix_masterdata_upc                                   |           0.00 |            0.00 | 16 kB      | 56 kB
+ Never Used Indexes        | contracts  | dsy_contractdata       | ix_dsydata_upc                                      |           0.00 |            0.00 | 16 kB      | 80 kB
+ Never Used Indexes        | contracts  | pepsi_contractdata     | ix_pepsidata_awgcode                                |           0.00 |            0.00 | 16 kB      | 80 kB
+ Never Used Indexes        | rebill     | sheetmeta              | ix_sheetmeta_iprovennum                             |           0.00 |            0.00 | 16 kB      | 24 kB
+ Never Used Indexes        | rebill     | contractid             | ix_contractid_contractid_cversion                   |           0.00 |            0.00 | 16 kB      | 8192 bytes
+ Never Used Indexes        | rebill     | contractid             | ix_contractid_deleted                               |           0.00 |            0.00 | 16 kB      | 8192 bytes
+ Never Used Indexes        | contracts  | rynds_contractdata     | ix_ryndsdata_awgcode                                |           0.00 |            0.00 | 16 kB      | 72 kB
+ Never Used Indexes        | contracts  | scanreport             | ix_storecode_plu_sbegindate_senddate                |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | rebill     | contractdata           | ix_data_contactid_cversion_sheetname                |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | rebill     | contractdata           | ix_data_upc                                         |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | rebill     | contractdata           | ix_data_awgcode                                     |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | contracts  | mom_contractdata       | ix_momdata_contactid_cversion_sheetname             |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | contracts  | mom_contractdata       | ix_momdata_awgcode                                  |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Never Used Indexes        | ssd        | tblmovement            | ix_tblmovement_itemUPC_s4store_ticketdate           |           0.00 |            0.00 | 8192 bytes | 0 bytes
+ Low Scans, High Writes    | ssd        | scandetail8            | ix_storecode_plu_scanbegin_scanend__scandetail8     |           2.34 |            0.00 | 376 MB     | 1976 MB
+ Low Scans, High Writes    | contracts  | storexcontract         | ix_sxc_cbegin_cend                                  |           0.00 |            0.00 | 93 MB      | 673 MB
+ Low Scans, High Writes    | contracts  | storexcontract         | ix_sxc_awgstorenum                                  |           0.00 |            0.00 | 73 MB      | 673 MB
+ Low Scans, High Writes    | contracts  | hrsh_contractdata      | ix_hrshdata_upc                                     |           1.45 |            0.01 | 56 kB      | 928 kB
+ Seldom Used Large Indexes | contracts  | storexcontract         | ix_sxc_contactid_cversion_sheetname                 |           0.80 |            2.42 | 144 MB     | 673 MB</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tables-sizes"><a class="link" href="#tables-sizes">Table Sizes</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">  nspname  |          relname           |             pg_relation_filepath             |  relsize
+-----------+----------------------------+----------------------------------------------+------------
+ rollup    | tblmovement2qtr15          | pg_tblspc/16387/PG_9.4_201409291/32843/33952 | 20 GB
+ rollup    | tblmovement3qtr15          | pg_tblspc/16387/PG_9.4_201409291/32843/33994 | 19 GB
+ rollup    | tblmovement1qtr15          | pg_tblspc/16387/PG_9.4_201409291/32843/33910 | 19 GB
+ rollup    | tblmovement4qtr14          | pg_tblspc/16387/PG_9.4_201409291/32843/34029 | 18 GB
+ rollup    | tblmovement3qtr14          | pg_tblspc/16387/PG_9.4_201409291/32843/33987 | 17 GB
+ rollup    | tblmovement4qtr15          | pg_tblspc/16387/PG_9.4_201409291/32843/34036 | 17 GB
+ rollup    | tblmovement2qtr14          | pg_tblspc/16387/PG_9.4_201409291/32843/33945 | 16 GB
+ rollup    | tblmovement2qtr16          | pg_tblspc/16387/PG_9.4_201409291/32843/33959 | 16 GB
+ rollup    | tblmovement1qtr16          | pg_tblspc/16387/PG_9.4_201409291/32843/33917 | 16 GB
+ rollup    | tblmovement4qtr12          | pg_tblspc/16387/PG_9.4_201409291/32843/34015 | 15 GB
+ rollup    | tblmovement1qtr14          | pg_tblspc/16387/PG_9.4_201409291/32843/33903 | 13 GB
+ rollup    | tblmovement4qtr13          | pg_tblspc/16387/PG_9.4_201409291/32843/34022 | 10211 MB
+ rollup    | tblmovement2qtr13          | pg_tblspc/16387/PG_9.4_201409291/32843/33938 | 10162 MB
+ rollup    | tblmovement3qtr13          | pg_tblspc/16387/PG_9.4_201409291/32843/33980 | 9360 MB
+ rollup    | tblmovement1qtr13          | pg_tblspc/16387/PG_9.4_201409291/32843/33896 | 8239 MB
+ rollup    | tblmovement3qtr12          | pg_tblspc/16387/PG_9.4_201409291/32843/33973 | 7365 MB
+ rollup    | tblmovement2qtr12          | pg_tblspc/16387/PG_9.4_201409291/32843/33931 | 7225 MB
+ rollup    | tblmovement1qtr12          | pg_tblspc/16387/PG_9.4_201409291/32843/33889 | 6759 MB
+ rollup    | tblmovement4qtr11          | pg_tblspc/16387/PG_9.4_201409291/32843/34008 | 6626 MB
+ rollup    | tblmovement3qtr11          | pg_tblspc/16387/PG_9.4_201409291/32843/33966 | 5672 MB
+ rollup    | tblmovement1qtr11          | pg_tblspc/16387/PG_9.4_201409291/32843/33882 | 5429 MB
+ rollup    | tblmovement2qtr11          | pg_tblspc/16387/PG_9.4_201409291/32843/33924 | 5346 MB
+ rollup    | tblmovement3qtr16          | pg_tblspc/16387/PG_9.4_201409291/32843/34001 | 1883 MB
+ ssd       | scandetail10               | pg_tblspc/16387/PG_9.4_201409291/32843/34132 | 1879 MB
+ ssd       | scandetail7                | pg_tblspc/16387/PG_9.4_201409291/32843/34200 | 1774 MB
+ ssd       | scandetail12               | pg_tblspc/16387/PG_9.4_201409291/32843/34148 | 1680 MB
+ ssd       | scandetail4                | pg_tblspc/16387/PG_9.4_201409291/32843/34176 | 1665 MB
+ ssd       | scandetail6                | pg_tblspc/16387/PG_9.4_201409291/32843/34192 | 1586 MB
+ ssd       | scandetail13               | pg_tblspc/16387/PG_9.4_201409291/32843/34156 | 1566 MB
+ ssd       | scandetail2                | pg_tblspc/16387/PG_9.4_201409291/32843/34164 | 1485 MB
+ ssd       | scandetail11               | pg_tblspc/16387/PG_9.4_201409291/32843/34140 | 1477 MB
+ ssd       | scandetail3                | pg_tblspc/16387/PG_9.4_201409291/32843/34170 | 1200 MB
+ ssd       | scandetail1                | pg_tblspc/16387/PG_9.4_201409291/32843/34126 | 1142 MB
+ contracts | storexcontract             | pg_tblspc/16387/PG_9.4_201409291/32843/42219 | 656 MB
+ contracts | backup2_storexcontract     | pg_tblspc/16387/PG_9.4_201409291/32843/42262 | 571 MB
+ contracts | backup_storexcontract      | pg_tblspc/16387/PG_9.4_201409291/32843/42268 | 557 MB
+ ssd       | tblmovement30              | pg_tblspc/16387/PG_9.4_201409291/32843/34385 | 458 MB
+ ssd       | sdsummary7                 | pg_tblspc/16387/PG_9.4_201409291/32843/34332 | 395 MB
+ ssd       | sdsummary10                | pg_tblspc/16387/PG_9.4_201409291/32843/34276 | 371 MB
+ ssd       | sdsummary6                 | pg_tblspc/16387/PG_9.4_201409291/32843/34325 | 358 MB
+ ssd       | sdsummary4                 | pg_tblspc/16387/PG_9.4_201409291/32843/34318 | 350 MB
+ ssd       | sdsummary8                 | pg_tblspc/16387/PG_9.4_201409291/32843/44791 | 349 MB
+ ssd       | sdsummary12                | pg_tblspc/16387/PG_9.4_201409291/32843/34290 | 332 MB
+ ssd       | sdsummary5                 | pg_tblspc/16387/PG_9.4_201409291/32843/34254 | 329 MB
+ ssd       | sdsummary11                | pg_tblspc/16387/PG_9.4_201409291/32843/34283 | 298 MB
+ ssd       | sdsummary2                 | pg_tblspc/16387/PG_9.4_201409291/32843/34304 | 297 MB
+ ssd       | sdsummary13                | pg_tblspc/16387/PG_9.4_201409291/32843/34297 | 295 MB
+ contracts | kraft_contractdata         | pg_tblspc/16387/PG_9.4_201409291/32843/42339 | 282 MB
+ ssd       | sdsummary3                 | pg_tblspc/16387/PG_9.4_201409291/32843/34311 | 265 MB
+ ssd       | sdsummary1                 | pg_tblspc/16387/PG_9.4_201409291/32843/34269 | 240 MB
+ ssd       | srpreport                  | pg_tblspc/16387/PG_9.4_201409291/32843/34361 | 120 MB
+ adman     | tpralldetail               | pg_tblspc/16387/PG_9.4_201409291/32843/43357 | 96 MB
+ adman     | catman                     | pg_tblspc/16387/PG_9.4_201409291/32843/43280 | 66 MB
+ contracts | contractxstore             | pg_tblspc/16387/PG_9.4_201409291/32843/42413 | 65 MB
+ ssd       | scandetail5                | pg_tblspc/16387/PG_9.4_201409291/32843/34184 | 55 MB
+ contracts | ca_contractdata            | pg_tblspc/16387/PG_9.4_201409291/32843/42284 | 53 MB
+ ssd       | sdsummary9                 | pg_tblspc/16387/PG_9.4_201409291/32843/44629 | 49 MB
+ billing   | consevent13                | pg_tblspc/16387/PG_9.4_201409291/32843/42090 | 43 MB
+ billing   | consevent8                 | pg_tblspc/16387/PG_9.4_201409291/32843/42146 | 32 MB
+ billing   | consevent11                | pg_tblspc/16387/PG_9.4_201409291/32843/42074 | 27 MB
+ adman     | currentorders              | pg_tblspc/16387/PG_9.4_201409291/32843/41973 | 25 MB
+ billing   | consevent10                | pg_tblspc/16387/PG_9.4_201409291/32843/42066 | 18 MB
+ billing   | consevent6                 | pg_tblspc/16387/PG_9.4_201409291/32843/42130 | 17 MB
+ billing   | consevent2                 | pg_tblspc/16387/PG_9.4_201409291/32843/42098 | 16 MB
+ billing   | consevent3                 | pg_tblspc/16387/PG_9.4_201409291/32843/42106 | 16 MB
+ billing   | consevent12                | pg_tblspc/16387/PG_9.4_201409291/32843/42082 | 15 MB
+ contracts | mdlz_contractdata          | pg_tblspc/16387/PG_9.4_201409291/32843/42351 | 12 MB
+ billing   | consevent7                 | pg_tblspc/16387/PG_9.4_201409291/32843/42138 | 12 MB
+ contracts | gm_contractdata            | pg_tblspc/16387/PG_9.4_201409291/32843/42315 | 12 MB
+ billing   | consevent4                 | pg_tblspc/16387/PG_9.4_201409291/32843/42114 | 10 MB
+ rebill    | storexcontract             | pg_tblspc/16387/PG_9.4_201409291/32843/42793 | 10120 kB
+ billing   | consevent9                 | pg_tblspc/16387/PG_9.4_201409291/32843/42154 | 8544 kB
+ reporting | sqlbackups                 | pg_tblspc/16387/PG_9.4_201409291/32843/42831 | 6864 kB
+ billing   | consevent1                 | pg_tblspc/16387/PG_9.4_201409291/32843/42058 | 6480 kB
+ billing   | consevent5                 | pg_tblspc/16387/PG_9.4_201409291/32843/42122 | 5888 kB
+ adman     | currentordersfix_pkey      | pg_tblspc/16387/PG_9.4_201409291/32843/42987 | 5320 kB
+ contracts | camp_contractdata          | pg_tblspc/16387/PG_9.4_201409291/32843/42292 | 4888 kB
+ rebill    | scandetail                 | pg_tblspc/16387/PG_9.4_201409291/32843/42771 | 4864 kB
+ rebill    | consevent                  | pg_tblspc/16387/PG_9.4_201409291/32843/42741 | 4824 kB
+ contracts | sheetmeta                  | pg_tblspc/16387/PG_9.4_201409291/32843/42177 | 3080 kB
+ contracts | backupsheetmeta            | pg_tblspc/16387/PG_9.4_201409291/32843/42274 | 2848 kB
+ adman     | changesrp                  | pg_tblspc/16387/PG_9.4_201409291/32843/41955 | 2112 kB
+ reporting | errorlog                   | pg_tblspc/16387/PG_9.4_201409291/32843/42823 | 1968 kB
+ reporting | FolderBackups              | pg_tblspc/16387/PG_9.4_201409291/32843/42815 | 1664 kB
+ contracts | kl_contractdata            | pg_tblspc/16387/PG_9.4_201409291/32843/42333 | 1512 kB
+ adman     | tempusers                  | pg_tblspc/16387/PG_9.4_201409291/32843/42031 | 1352 kB
+ rebill    | contractxstore             | pg_tblspc/16387/PG_9.4_201409291/32843/42757 | 1264 kB
+ contracts | kraft_contractdatatest     | pg_tblspc/16387/PG_9.4_201409291/32843/42470 | 1032 kB</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="missing-keys"><a class="link" href="#missing-keys">Tables without Primary Keys</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">  schema   |           table
+-----------+---------------------------
+ billing   | billing_run
+ iprobill  | billing_run
+ public    | billing_run
+ rollup    | tblmovement1qtr15
+ rollup    | tblmovement2qtr15
+ rollup    | tblmovement1qtr16
+ rollup    | tblmovement2qtr12
+ rollup    | tblmovement2qtr11
+ rollup    | tblmovement2qtr13
+ rollup    | tblmovement2qtr14
+ rollup    | tblmovement2qtr16
+ rollup    | tblmovement3qtr11
+ ssd       | tblmovement
+ rollup    | tblmovement3qtr15
+ rollup    | tblmovement3qtr16
+ rollup    | tblmovement4qtr16
+ rollup    | tblmovement4qtr14
+ rollup    | tblmovement4qtr11
+ rollup    | tblmovement4qtr12
+ rollup    | tblmovement4qtr13
+ rollup    | tblmovement4qtr15
+ ssd       | flextest
+ ssd       | gimmex
+ ssd       | scandetail5
+ ssd       | scandetail9
+ ssd       | scandetail3
+ ssd       | scandetail4
+ ssd       | sdsummaryall
+ ssd       | scandetail6
+ ssd       | scandetail7
+ ssd       | sdsummary5
+ ssd       | sdsummary10
+ ssd       | sdsummary6
+ ssd       | sdsummary11
+ ssd       | sdsummary12
+ ssd       | sdsummary13
+ ssd       | sdsummary2
+ ssd       | sdsummary3
+ ssd       | sdsummary7
+ ssd       | sdsummary4
+ ssd       | srpreport
+ ssd       | sdsummary9
+ ssd       | sdsummary1
+ ssd       | tblmovement30
+ refdata   | report_worksheets
+ adman     | chartdata
+ adman     | currentordersfix922
+ ssd       | scandetailnopay
+ adman     | notes
+ adman     | tempusers
+ billing   | checkcreationrpt
+ billing   | chkrpt
+ billing   | consevent1
+ ssd       | consevent
+ billing   | consevent10
+ billing   | consevent11
+ billing   | consevent12
+ billing   | consevent13
+ billing   | consevent2
+ billing   | consevent3
+ ssd       | scandetail8
+ billing   | consevent4
+ billing   | consevent5
+ billing   | consevent6
+ ssd       | scandetail11
+ rollup    | tblmovement1qtr14
+ billing   | consevent7
+ rollup    | tblmovement1qtr11
+ billing   | consevent8
+ rollup    | tblmovement3qtr14
+ rollup    | tblmovement1qtr12
+ rollup    | tblmovement3qtr12
+ rollup    | tblmovement1qtr13
+ ssd       | adgroup
+ rollup    | tblmovement3qtr13
+ ssd       | scandetail10
+ ssd       | scandetail1
+ ssd       | scandetail12
+ ssd       | scandetail13
+ billing   | consevent9
+ ssd       | scandetail2
+ contracts | contractid
+ contracts | period
+ contracts | sheetmeta
+ billing   | vendoroverpayment
+ contracts | storexcontract
+ contracts | archivecontractid
+ contracts | archivekraft_contractdata
+ contracts | archivesheetmeta
+ contracts | archivestorexcontract
+ contracts | authlist
+ contracts | backup2_storexcontract
+ contracts | backup_storexcontract
+ contracts | backupsheetmeta
+ contracts | ca_contractdata
+ ssd       | sdsummary8
+ contracts | camp_contractdata
+ contracts | dsy_contractdata
+ contracts | gm_contractdata
+ contracts | hrsh_contractdata
+ contracts | jns_contractdata
+ contracts | kl_contractdata
+ contracts | kraft_contractdata
+ contracts | master_contractdata
+ contracts | mdlz_contractdata
+ contracts | mom_contractdata
+ contracts | nes_contractdata
+ contracts | pepsi_contractdata
+ contracts | pur_contractdata
+ contracts | rynds_contractdata
+ contracts | sm_contractdata
+ contracts | contractaddition
+ contracts | contractxstore
+ contracts | diskcontainer
+ contracts | diskfolder
+ contracts | kraft_contractdatatest
+ contracts | scanreport
+ contracts | sheetmeta_ext
+ contracts | tmp_store_ad
+ contracts | tmp_store_ad_primary
+ public    | appid
+ public    | cu_queue
+ public    | global_config
+ public    | result
+ public    | symphony
+ rebill    | contractid
+ rebill    | sheetmeta
+ rebill    | archiveconsevent
+ rebill    | archivecontractdata
+ rebill    | archivescandetail
+ rebill    | archivesdsummary
+ rebill    | consevent
+ rebill    | contractdata
+ rebill    | contractxstore
+ rebill    | diskcontainer
+ rebill    | diskfolder
+ rebill    | scandetail
+ rebill    | sdsummaryall
+ rebill    | storexcontract
+ reporting | FolderBackups
+ reporting | sqlbackups
+ reporting | sqlbackups2
+ reporting | weblogs
+ reporting | tblgroupusers
+ reporting | tblstoregroups
+ reporting | tblstores
+ reporting | tblusers</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0<br>
+Last updated 2016-03-02 23:14:37 IST
+</div>
+</div>
+</body>
+</html>
